@@ -5,17 +5,23 @@ var walk  = require('walk'),
 
 // on_file(file_ext, abs_path)
 var FileDiscover = function(dir_list, type_list, on_file) {
-	var dir_list_  = dir_list;
-	var type_list_ = type_list;
+	var dir_list_  = Array.isArray(dir_list) ? dir_list : [];
+	var type_list_ = Array.isArray(type_list) ? type_list : ['png', 'jpg', 'jpeg'];
 	var on_file_   = on_file;
 
-	var walker = walk.walk(dir_list, { followLinks: false });
+	exploreAllDirs();
+	
+	function exploreAllDirs() {
+		dir_list_.forEach(function (dir, index, array) {
+			var walker = walk.walk(dir, { followLinks: false });
 
-	walker.on("file",        fileHandler);
-	walker.on("errors",      errorsHandler);
-	walker.on("end",         endHandler);
-	walker.on("names",       namesHandler);
-	walker.on("directories", directoriesHandler);
+			walker.on("file",        fileHandler);
+			walker.on("errors",      errorsHandler);
+			walker.on("end",         endHandler);
+			walker.on("names",       namesHandler);
+			walker.on("directories", directoriesHandler);
+		});
+	}
 
 	function namesHandler(root, nodeNamesArray) {}
 
