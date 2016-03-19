@@ -47,8 +47,15 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 		for (var i in type_list_) {
 			var type = type_list_[i];
 			if (ext.toUpperCase() === type || ext.toLowerCase() === type) {
-				var fullname = path.resolve(root, stat.name)
-				on_file_(ext.toLowerCase(), fullname);
+				var full_path = path.resolve(root, stat.name)
+				var md = {};
+				md['name'] = stat.name;
+				md['path'] = full_path;
+				md['birth_time']  = stat.birthtime;
+				md['access_time'] = stat.atime;
+				md['modify_time'] = stat.mtime;
+				md['change_time'] = stat.ctime;
+				on_file_(ext.toLowerCase(), md);
 			}
 		}
 		next();
