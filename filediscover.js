@@ -10,42 +10,67 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 	var on_file_   = on_file;
 
 	exploreAllDirs();
-	
+
 	function exploreAllDirs() {
 		dir_list_.forEach(function (dir, index, array) {
 			var walker = walk.walk(dir, { followLinks: false });
 
-			walker.on("file",        fileHandler);
-			walker.on("errors",      errorsHandler);
-			walker.on("end",         endHandler);
-			walker.on("names",       namesHandler);
-			walker.on("directories", directoriesHandler);
+			// all events are here
+			// All single event callbacks are in the form of function (root, stat, next) {}.
+			// All multiple event callbacks callbacks are in the form of function (root, stats, next) {}, except names which is an array of strings.
+			// All error event callbacks are in the form function (root, stat/stats, next) {}. stat.error contains the error.
+
+			walker.on("names",          namesHandler);
+			walker.on("directory",      directoryHandler);
+			walker.on("directories",    directoriesHandler);
+			walker.on("file",           fileHandler);
+			walker.on("files",          filesHandler);
+			walker.on("end",            endHandler);
+			walker.on("nodeError",      nodeErrorHandler);      //(stat failed)
+			walker.on("directoryError", directoryErrorHandler); // (stat succedded, but readdir failed)
+			walker.on("errors",         errorsHandler);         //(a collection of any errors encountered)
 		});
 	}
 
 	function namesHandler(root, nodeNamesArray) {}
 
-	function directoriesHandler(root, dirStatsArray, next) {
+	function directoryHandler(root, stat, next) {
 		next();
 	}
 
-	function fileHandler(root, fileStat, next) {
-		var ext = path.extname(fileStat.name).substring(1);		
+	function directoriesHandler(root, stats, next) {
+		next();
+	}
+
+	function fileHandler(root, stat, next) {
+		var ext = path.extname(stat.name).substring(1);		
 		for (var i in type_list_) {
 			var type = type_list_[i];
 			if (ext.toUpperCase() === type || ext.toLowerCase() === type) {
-				var fullname = path.resolve(root, fileStat.name)
+				var fullname = path.resolve(root, stat.name)
 				on_file_(ext.toLowerCase(), fullname);
 			}
 		}
 		next();
 	}
 
-	function errorsHandler(root, nodeStatsArray, next) {
-	  next();
+	function filesHandler(root, stats, next) {
+		next();
 	}
 
 	function endHandler() {}
+
+	function nodeErrorHandler(root, stat, next) {
+		next();
+	}
+
+	function directoryErrorHandler(root, stat, next) {
+		next();
+	}
+
+	function errorsHandler(root, nodeStatsArray, next) {
+		next();
+	}
 };
 
 module.exports.FileDiscover = FileDiscover;
