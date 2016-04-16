@@ -50,12 +50,13 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 				var full_path = path.resolve(root, stat.name)
 				var md = {};
 				md['name'] = stat.name;
+				md['ext']  = ext.toLowerCase();
 				md['path'] = full_path;
 				md['birth_time']  = stat.birthtime;
 				md['access_time'] = stat.atime;
 				md['modify_time'] = stat.mtime;
 				md['change_time'] = stat.ctime;
-				on_file_(ext.toLowerCase(), md);
+				on_file_(md);
 			}
 		}
 		next();
