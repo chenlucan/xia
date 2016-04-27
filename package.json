@@ -1,0 +1,25 @@
+{
+  "name": "xia",
+  "version": "1.0.0",
+  "description": "my first supposed-to-be complete project",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chenlucan/xia.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chenlucan/xia/issues"
+  },
+  "homepage": "https://github.com/chenlucan/xia#readme",
+  "dependencies": {
+    "pouchdb": "^5.3.1"
+  }
+}

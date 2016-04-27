@@ -52,6 +52,7 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 				md['name'] = stat.name;
 				md['ext']  = ext.toLowerCase();
 				md['path'] = full_path;
+				// time object
 				md['birth_time']  = stat.birthtime;
 				md['access_time'] = stat.atime;
 				md['modify_time'] = stat.mtime;
