@@ -19,38 +19,38 @@ var Pantry = function () {
 		});
 	}
 
-	function GetAll() {
+	function GetAll(on_file_record) {
 		db.allDocs({
 			include_docs: true,
 		  	attachments: true
 		}).then(function (result) {
-		  	// handle result
+			OnResult(result, on_file_record);
 		}).catch(function (err) {
 		  	console.log(err);
 		});
 	}
 
-	function GetByDate(date) {
+	function GetByDate(date, on_file_record) {
 		db.query('birth_time_index', {
 			include_docs: true,
 		  	attachments: true,
 		  	startkey: date, 
 		  	endkey: date+'\uffff'
 		}).then(function (result) {
-		  	// handle result
+			OnResult(result, on_file_record);
 		}).catch(function (err) {
 		  	console.log(err);
 		});
 	}	
 
-	function GetByType(type) {
+	function GetByType(type, on_file_record) {
 		db.query('type_index', {
 			include_docs: true,
 		  	attachments: true,
 		  	startkey: type, 
 		  	endkey: type+'\uffff'
 		}).then(function (result) {
-		  	// handle result
+			OnResult(result, on_file_record);
 		}).catch(function (err) {
 		  	console.log(err);
 		});
@@ -76,6 +76,12 @@ var Pantry = function () {
 		};
 		doc.views[name] = { map: mapFunction.toString() };
 		return doc;
+	}
+
+	function OnResult(result, on_file_record) {
+		for (var i in result.rows) {
+			on_file_record(result.rows[i]);
+		}
 	}
 }
 
