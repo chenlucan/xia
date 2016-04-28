@@ -3,7 +3,8 @@ var pt = require('./pantry.js');
 
 var filemanager = new fm.FileManager(['/home/lucan/Pictures'], on_new_file, on_new_file);
 
-var pantry      = new pt.Pantry();
+// use current for now
+var pantry      = new pt.Pantry('./');
 pantry.GetAll(on_db_file);
 
 function on_db_file(file) {

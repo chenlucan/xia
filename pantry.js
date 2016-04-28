@@ -1,7 +1,8 @@
 var LevelPouchDB = require('pouchdb');
+var path = require('path');
 
-var Pantry = function () {
-	var pantry_ = 'pantry_storage';
+var Pantry = function (db_home) {
+	var pantry_ = path.join(db_home, 'pantry_storage');
 	var db = new LevelPouchDB(pantry_);
 
 	this.SaveImg   = SaveImg;
