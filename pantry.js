@@ -30,12 +30,12 @@ var Pantry = function () {
 		});
 	}
 
-	function GetByDate(date, on_file_record) {
+	function GetByDate(iso_date, on_file_record) {
 		db.query('birth_time_index', {
 			include_docs: true,
 		  	attachments: true,
-		  	startkey: date, 
-		  	endkey: date+'\uffff'
+		  	startkey: iso_date, 
+		  	endkey: iso_date+'\uffff'
 		}).then(function (result) {
 			OnResult(result, on_file_record);
 		}).catch(function (err) {

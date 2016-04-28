@@ -54,9 +54,9 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 				md['path'] = full_path;
 				// time object
 				md['birth_time']  = stat.birthtime;
-				md['access_time'] = stat.atime;
-				md['modify_time'] = stat.mtime;
-				md['change_time'] = stat.ctime;
+				md['access_time'] = stat.atime.toISOString();
+				md['modify_time'] = stat.mtime.toISOString();
+				md['change_time'] = stat.ctime.toISOString();
 				on_file_(md);
 			}
 		}
