@@ -5,6 +5,13 @@
   <script type="text/javascript" src="test_import.js"></script>
 </head>
 <body>
-
+<script type="text/javascript">
+	// it use Default as data home
+	console.log('default data home: ', nw.App.dataPath);
+	var path = require('path');
+	// we use pantry as our data home
+	console.log('app home: ', path.dirname(nw.App.dataPath));
+	console.log('our data home: ', path.join(path.dirname(nw.App.dataPath), 'pantry'));
+</script>
 </body>
 </html>
