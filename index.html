@@ -10,8 +10,25 @@
 	console.log('default data home: ', nw.App.dataPath);
 	var path = require('path');
 	// we use pantry as our data home
-	console.log('app home: ', path.dirname(nw.App.dataPath));
-	console.log('our data home: ', path.join(path.dirname(nw.App.dataPath), 'pantry'));
+	console.log('app home: ', path.dirname(nw.App.dataPath));	
+
+	var data_home = path.join(path.dirname(nw.App.dataPath), 'pantry');
+	console.log('our data home: ', data_home);
+
+	var fs = require('fs');
+	SetUpPantry();
+
+	function SetUpPantry() {
+		fs.mkdir(data_home, function(err) {
+			if (!err) {
+				var photos_home = path.join(data_home, 'photos');
+				var db_home     = path.join(data_home, 'db');
+
+				fs.mkdir(photos_home, function(err) {});
+				fs.mkdir(db_home, function(err) {});
+			}
+		});
+	}
 </script>
 </body>
 </html>
