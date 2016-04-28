@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/chenlucan/xia#readme",
   "dependencies": {
-    "pouchdb": "^5.3.1"
+    "pouchdb": "^5.3.1",
+    "walk": "~2.3.9"
   }
 }

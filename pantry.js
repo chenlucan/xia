@@ -12,7 +12,7 @@ var Pantry = function () {
 	SetUpIndex();
 
 	function SaveImg(img) {
-		img['_id'] = img['birth_time'].toISOString()+'_'+img['type']+'_'+img['md5'];
+		img['_id'] = img['md5'];
 		db.put(img).then(function (response) {
 			// handle response
 		}).catch(function (err) {
