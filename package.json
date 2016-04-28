@@ -1,8 +1,18 @@
 {
   "name": "xia",
+  "main": "index.html",  
+  "window" : {
+    "position":"mouse",
+    "min_width":400,
+    "min_height":400,
+    "max_width":800,
+    "max_height":800,
+    "as_desktop":true,
+    "resizable": true
+  },
+
   "version": "1.0.0",
-  "description": "my first supposed-to-be complete project",
-  "main": "app.js",
+  "description": "my first supposed-to-be complete project",  
   "directories": {
     "test": "test"
   },
