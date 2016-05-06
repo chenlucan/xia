@@ -6,15 +6,19 @@
 </head>
 <body>
 <script type="text/javascript">
+  require('./test_nodectx.js');
 	// it use Default as data home
 	console.log('default data home: ', nw.App.dataPath);
 	var path = require('path');
 	// we use pantry as our data home
-	console.log('app home: ', path.dirname(nw.App.dataPath));	
+	console.log('app home: ', path.dirname(nw.App.dataPath));
 
 	var data_home = path.join(path.dirname(nw.App.dataPath), 'pantry');
 	console.log('our data home: ', data_home);
 
+
+////////////////////////////////////////////////////////
+//1. Setup Pantry
 	var fs = require('fs');
 	SetUpPantry();
 
@@ -29,6 +33,30 @@
 			}
 		});
 	}
+
+///////////////////////////////////////////////////////
+//2. Retrieve existing pantry storage
+  var pantry = require('./pantry.js');
+  pantry.GetAll(OnDataMessage);
+
+  function OnDataMessage(msg) {
+    // common data message
+    // now you may feed into data presentation
+  }
+
+////////////////////////////////////////////////////////
+//3. Data presentaion is to be done
+
+
+///////////////////////////////////////////////////////
+//4. FileManager is setup and ready for exploring media
+//   it should return common data message
+
+
+////////////////////////////////////////////////////////
+// 5. import FileManager found data message into Pantry
+
+
 </script>
 </body>
 </html>
