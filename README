@@ -1,1 +1,12 @@
 my first supposed-to-be complete project
+
+ImageProcessing
+1. gm - nodejs GraphicsMagicks, it depends on GraphicsMagicks/ImageMagicks
+2. lwip - lightweight image processing
+  - does not reply on third party modules
+
+exif
+1. node-exif for image only
+2. file metadata
+
+css is sufficient to display image thumbnails
