@@ -7,7 +7,7 @@ jQuery(document).ready(function($){
 
 	//on scolling, show/animate timeline blocks when enter the viewport
 	$(window).on('scroll', function(){
-		(!window.requestAnimationFrame) 
+		(!window.requestAnimationFrame)
 			? setTimeout(function(){ showBlocks(timelineBlocks, offset); }, 100)
 			: window.requestAnimationFrame(function(){ showBlocks(timelineBlocks, offset); });
 	});
@@ -22,5 +22,15 @@ jQuery(document).ready(function($){
 		blocks.each(function(){
 			( $(this).offset().top <= $(window).scrollTop()+$(window).height()*offset && $(this).find('.cd-timeline-img').hasClass('is-hidden') ) && $(this).find('.cd-timeline-img, .cd-timeline-content').removeClass('is-hidden').addClass('bounce-in');
 		});
+	}
+
+	function createTimePoint(record) {
+		if (record['type'] = 'image') {
+			createImagePoint(record);
+		} else if (record['type'] = 'movie') {
+			createMoviePoint(record);
+		} else {
+			console.log('time record is not supported: ', record);
+		}
 	}
 });
