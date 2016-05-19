@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="css/font.css"> <!-- http://fonts.googleapis.com/css?family=Droid+Serif|Open+Sans:400,700 -->
 	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
 	<link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
+  <link rel="stylesheet" href="css/timeline_image.css"> <!-- Resource style -->
 	<script src="js/modernizr.js"></script> <!-- Modernizr -->
 	<title>Xia</title>
 </head>
@@ -30,54 +31,6 @@
 
 
 
-<style>
-div.img {
-    border: 1px solid #ccc;
-}
-
-div.img:hover {
-    border: 1px solid #777;
-}
-
-div.img img {
-    width: 100%;
-    height: auto;
-}
-
-div.desc {
-    padding: 15px;
-    text-align: center;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-.responsive {
-    padding: 0 6px;
-    float: left;
-    width: 24.99999%;
-}
-
-@media only screen and (max-width: 700px){
-    .responsive {
-        width: 49.99999%;
-        margin: 6px 0;
-    }
-}
-
-@media only screen and (max-width: 500px){
-    .responsive {
-        width: 100%;
-    }
-}
-
-.clearfix:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-</style>
 	<template id='img-template'>
 		<div class="cd-timeline-block">
 			<div class="cd-timeline-img cd-picture">
@@ -86,39 +39,39 @@ div.desc {
 			<div class="cd-timeline-content">
 				<h2></h2>
 
-				<div class="responsive">
-				  <div class="img">
+				<div class="tl_responsive">
+				  <div class="tl_img">
 				    <a target="_blank" href="">
 				      <img src="" alt="" width="300" height="200">
 				    </a>
-				    <div class="desc"></div>
+				    <div class="tl_desc"></div>
 				  </div>
 				</div>
-				<div class="responsive">
-				  <div class="img">
+				<div class="tl_responsive">
+				  <div class="tl_img">
 				    <a target="_blank" href="">
 				      <img src="" alt="" width="600" height="400">
 				    </a>
-				    <div class="desc"></div>
+				    <div class="tl_desc"></div>
 				  </div>
 				</div>
-				<div class="responsive">
-				  <div class="img">
+				<div class="tl_responsive">
+				  <div class="tl_img">
 				    <a target="_blank" href="">
 				      <img src="" alt="" width="600" height="400">
 				    </a>
-				    <div class="desc"></div>
+				    <div class="tl_desc"></div>
 				  </div>
 				</div>
-				<div class="responsive">
-				  <div class="img">
+				<div class="tl_responsive">
+				  <div class="tl_img">
 				    <a target="_blank" href="">
 				      <img src="" alt="" width="600" height="400">
 				    </a>
-				    <div class="desc"></div>
+				    <div class="tl_desc"></div>
 				  </div>
 				</div>
-				<div class="clearfix"></div>
+				<div class="tl_clearfix"></div>
 
 				<p>Timeline organizes your data, make your life colorful. You data can be more fun and valuable.</p>
 				<a href="#0" class="cd-read-more">Read more</a>
@@ -128,7 +81,8 @@ div.desc {
 	</template>
 
 <script src="js/jquery-1.11.0.min.js"></script>
-<script src="js/main.js"></script> <!-- Resource jQuery -->
+<!-- <script src="pantry.js"></script> -->
+<script src="main.js"></script> <!-- Resource jQuery -->
 
 
 
@@ -140,63 +94,6 @@ div.desc {
 
 
 <script type="text/javascript">
-	// it use Default as data home
-	console.log('default data home: ', nw.App.dataPath);
-	var path = require('path');
-	// we use pantry as our data home
-	console.log('app home: ', path.dirname(nw.App.dataPath));
-
-	var data_home = path.join(path.dirname(nw.App.dataPath), 'pantry');
-	console.log('our data home: ', data_home);
-
-	var fs = require('fs');
-	SetUpPantry();
-
-	function SetUpPantry() {
-		fs.mkdir(data_home, function(err) {
-			if (!err) {
-				var photos_home = path.join(data_home, 'photos');
-				var db_home     = path.join(data_home, 'db');
-
-				fs.mkdir(photos_home, function(err) {});
-				fs.mkdir(db_home, function(err) {});
-			}
-		});
-	}
-
-
-	var t = document.querySelector('#img-template');
-	console.log('====================', t);
-	var tems = t.content.querySelector('.cd-timeline-content');
-	console.log('======================',tems);
-	tems.querySelector('h2').innerHTML = "National reserve park";
-	var imgs = tems.getElementsByClassName('responsive');
-	console.log('=================',imgs);
-
-	imgs[0].querySelector('a').href  = "./imgs/morpher.jpg"
-	imgs[0].querySelector('img').src = "./imgs/morpher.jpg"
-	imgs[0].querySelector('img').alt = "1111111111"
-	imgs[0].querySelector('.desc').innerHTML   = "First image of the day"
-
-	imgs[1].querySelector('a').href  = "./imgs/lost.png"
-	imgs[1].querySelector('img').src = "./imgs/lost.png"
-	imgs[1].querySelector('img').alt = "2222222222"
-	imgs[1].querySelector('.desc').innerHTML   = "2nd image of the day"
-
-	imgs[2].querySelector('a').href  = "./imgs/identifyParseErr.jpg"
-	imgs[2].querySelector('img').src = "./imgs/identifyParseErr.jpg"
-	imgs[2].querySelector('img').alt = "3333333333"
-	imgs[2].querySelector('.desc').innerHTML   = "3rd image of the day"
-
-	imgs[3].querySelector('a').href  = "./imgs/blue.gif";
-	imgs[3].querySelector('img').src = "./imgs/blue.gif";
-	imgs[3].querySelector('img').alt = "4444444444";
-	imgs[3].querySelector('.desc').innerHTML   = "4th image of the day"
-
-	var clone = document.importNode(t.content, true);
-	var tl = document.body.querySelector('#cd-timeline');
-
-  tl.insertBefore(clone, tl.firstChild);
 
 </script>
 </body>
