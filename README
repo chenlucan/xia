@@ -10,3 +10,18 @@ exif
 2. file metadata
 
 css is sufficient to display image thumbnails
+
+
+I don't even need image processing library
+
+http://tutorialzine.com/2014/07/20-impressive-css3-techniques-libraries-and-examples/#comment-618393
+gives very comprehensive list of css
+css is going to be the new ui king
+
+in fact all i need is discover all files (image, etc)
+file - birth_time, hash
+ images - exif
+ movie  -
+ docs   -
+
+No thumbnail is needed in database
