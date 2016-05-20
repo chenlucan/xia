@@ -114,23 +114,23 @@ function AddImageTimePoint(files) {
 	var imgs = tems.getElementsByClassName('tl_responsive');
 	console.log('=================',imgs);
 
-	imgs[0].querySelector('a').href  = 'file:////'+files[0]['path'];
-	imgs[0].querySelector('img').src = 'file:////'+files[0]['path'];
+	imgs[0].querySelector('a').href  = 'file://'+files[0]['path'];
+	imgs[0].querySelector('img').src = 'file://'+files[0]['path'];
 	imgs[0].querySelector('img').alt = files[0]['name'];
 	imgs[0].querySelector('.tl_desc').innerHTML   = "First image of the day"
 
-	imgs[1].querySelector('a').href  = 'file:////'+files[1]['path'];
-	imgs[1].querySelector('img').src = 'file:////'+files[1]['path'];
+	imgs[1].querySelector('a').href  = 'file://'+files[1]['path'];
+	imgs[1].querySelector('img').src = 'file://'+files[1]['path'];
 	imgs[1].querySelector('img').alt = files[1]['name'];
 	imgs[1].querySelector('.tl_desc').innerHTML   = "2nd image of the day"
 
-	imgs[2].querySelector('a').href  = 'file:////'+files[2]['path'];
-	imgs[2].querySelector('img').src = 'file:////'+files[2]['path'];
+	imgs[2].querySelector('a').href  = 'file://'+files[2]['path'];
+	imgs[2].querySelector('img').src = 'file://'+files[2]['path'];
 	imgs[2].querySelector('img').alt = files[2]['name'];
 	imgs[2].querySelector('.tl_desc').innerHTML   = "3rd image of the day"
 
-	imgs[3].querySelector('a').href  = 'file:////'+files[3]['path'];
-	imgs[3].querySelector('img').src = 'file:////'+files[3]['path'];
+	imgs[3].querySelector('a').href  = 'file://'+files[3]['path'];
+	imgs[3].querySelector('img').src = 'file://'+files[3]['path'];
 	imgs[3].querySelector('img').alt = files[3]['name'];
 	imgs[3].querySelector('.tl_desc').innerHTML   = "4th image of the day"
 
