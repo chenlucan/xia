@@ -2,9 +2,11 @@
   "name": "xia",
   "main": "index.html",
   "window" : {
-    "position":"mouse",
+    "position":"center",
     "min_width":400,
     "min_height":400,
+    "min_width":1000,
+    "min_height":618,
     "as_desktop":true,
     "resizable": true
   },
