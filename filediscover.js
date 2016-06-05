@@ -1,16 +1,17 @@
 "use strict";
 
-var walk  = require('walk'), 
+var walk  = require('walk'),
   	path  = require('path');
 
-// on_file(file_ext, abs_path)
-var FileDiscover = function(dir_list, type_list, on_file) {
+// on_files([file_object])
+var FileDiscover = function(dir_list, type_list, on_files) {
 	var dir_list_  = Array.isArray(dir_list) ? dir_list : [];
 	var type_list_ = Array.isArray(type_list) ? type_list : ['png', 'jpg', 'jpeg'];
-	var on_file_   = on_file;
+	var on_files_  = on_files;
+  var found_files_ = [];
 
 	exploreAllDirs();
-
+  console.log("===============FileDiscover===1");
 	function exploreAllDirs() {
 		dir_list_.forEach(function (dir, index, array) {
 			var walker = walk.walk(dir, { followLinks: false });
@@ -43,7 +44,7 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 	}
 
 	function fileHandler(root, stat, next) {
-		var ext = path.extname(stat.name).substring(1);		
+		var ext = path.extname(stat.name).substring(1);
 		for (var i in type_list_) {
 			var type = type_list_[i];
 			if (ext.toUpperCase() === type || ext.toLowerCase() === type) {
@@ -64,7 +65,7 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 				md['access_time'] = stat.atime.toISOString();
 				md['modify_time'] = stat.mtime.toISOString();
 				md['change_time'] = stat.ctime.toISOString();
-				on_file_(md);
+				found_files_.push(md);
 			}
 		}
 		next();
@@ -74,7 +75,10 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 		next();
 	}
 
-	function endHandler() {}
+	function endHandler() {
+    console.log("===============FileDiscover===endHandler");
+    on_files_(found_files_);
+  }
 
 	function nodeErrorHandler(root, stat, next) {
 		next();
@@ -90,4 +94,3 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 };
 
 module.exports.FileDiscover = FileDiscover;
-

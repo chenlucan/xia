@@ -21,6 +21,7 @@ var Pantry = function (db_home) {
 	}
 
 	function GetAll(on_file_record) {
+		console.log("====================GetAll======");
 		db.allDocs({
 			include_docs: true,
 		  	attachments: true
@@ -35,20 +36,20 @@ var Pantry = function (db_home) {
 		db.query('birth_time_index', {
 			include_docs: true,
 		  	attachments: true,
-		  	startkey: iso_date, 
+		  	startkey: iso_date,
 		  	endkey: iso_date+'\uffff'
 		}).then(function (result) {
 			OnResult(result, on_file_record);
 		}).catch(function (err) {
 		  	console.log(err);
 		});
-	}	
+	}
 
 	function GetByType(type, on_file_record) {
 		db.query('type_index', {
 			include_docs: true,
 		  	attachments: true,
-		  	startkey: type, 
+		  	startkey: type,
 		  	endkey: type+'\uffff'
 		}).then(function (result) {
 			OnResult(result, on_file_record);

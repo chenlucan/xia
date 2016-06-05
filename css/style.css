@@ -64,7 +64,10 @@ header {
   text-align: center;
   background: #303e49;
 }
-.import-button {
+#folderSelector {
+  visibility:hidden;
+}
+#import-button {
   display:inline-block
 	text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
 	text-align: center;
