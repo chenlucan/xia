@@ -1,4 +1,4 @@
-/* -------------------------------- 
+/* --------------------------------
 
 Primary style
 
@@ -36,7 +36,7 @@ h1, h2 {
   font-weight: bold;
 }
 
-/* -------------------------------- 
+/* --------------------------------
 
 Modules - reusable parts of our design
 
@@ -54,16 +54,29 @@ Modules - reusable parts of our design
   clear: both;
 }
 
-/* -------------------------------- 
+/* --------------------------------
 
-Main components 
+Main components
 
 -------------------------------- */
 header {
   height: 200px;
-  line-height: 200px;
   text-align: center;
   background: #303e49;
+}
+.import-button {
+  display:inline-block
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+	text-align: center;
+	margin: 0 auto;
+	position: relative;
+	width: 16em;
+	top: 40%;
+	padding: 1em;
+	background: #FF582E;
+	border-radius: 2em;
+	border: solid 1px #FF582E;
+	color: white;
 }
 header h1 {
   color: white;
