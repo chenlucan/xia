@@ -12,3 +12,8 @@ exif
 css is sufficient to display image thumbnails
 
 photo discover app by nwjs https://scotch.io/tutorials/creating-a-photo-discovery-app-with-nw-js-part-1
+
+js db
+loki - http://lokijs.org/#/ - NoSQL
+leveldb/level.js
+indexeddb - NoSQL

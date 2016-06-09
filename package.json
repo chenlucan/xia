@@ -1,16 +1,13 @@
 {
   "name": "xia",
   "main": "index.html",
-  "window" : {
-    "position":"center",
-    "min_width":400,
-    "min_height":400,
-    "min_width":1000,
-    "min_height":618,
-    "as_desktop":true,
+  "window": {
+    "position": "center",
+    "min_width": 1000,
+    "min_height": 618,
+    "as_desktop": true,
     "resizable": true
   },
-
   "version": "1.0.0",
   "description": "my first supposed-to-be complete project",
   "directories": {
@@ -30,6 +27,7 @@
   },
   "homepage": "https://github.com/chenlucan/xia#readme",
   "dependencies": {
+    "nedb": "^1.8.0",
     "pouchdb": "^5.3.1",
     "walk": "~2.3.9"
   }
