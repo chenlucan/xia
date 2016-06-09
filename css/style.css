@@ -81,6 +81,9 @@ header {
 	border: solid 1px #FF582E;
 	color: white;
 }
+#import-button:hover{
+  cursor: pointer;
+}
 header h1 {
   color: white;
   font-size: 18px;

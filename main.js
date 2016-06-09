@@ -16,7 +16,7 @@ InitializeInstallation();
 var db = new pantry.Pantry(db_home);
 db.GetAll(OnRecord);
 
-var fileMgr = new fm.FileManager([], function(){}, function(){});
+var fileMgr = new fm.FileManager(data_home, [], function(){}, function(){});
 
 jQuery(document).ready(function($) {
 	IniializeTimeline();
