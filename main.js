@@ -16,7 +16,7 @@ InitializeInstallation();
 var db = new pantry.Pantry(db_home);
 db.GetAll(OnRecord);
 
-var fileMgr = new fm.FileManager(data_home, [], function(){}, function(){});
+var fileMgr = new fm.FileManager(data_home, function(){}, function(){}, FileImported);
 
 jQuery(document).ready(function($) {
 	IniializeTimeline();
@@ -39,7 +39,6 @@ jQuery(document).ready(function($) {
 	}
 
 	function DiscoverFolrder(folderPath) {
-		console.log("==================folderPath: ", folderPath,"====fileMgr===",fileMgr);
 		fileMgr.DiscoverAndImportPath(folderPath);
 	}
 
@@ -97,6 +96,10 @@ function OnRecord(record) {
 			}
 		}
 	}
+}
+
+function FileImported(file) {
+	db.SaveFile(file);
 }
 
 function AddImageTimePoint(files) {

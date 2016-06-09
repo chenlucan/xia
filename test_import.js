@@ -1,7 +1,7 @@
 var fm = require('./filemanager.js');
 var pt = require('./pantry.js');
 
-var filemanager = new fm.FileManager(['/home/lucan/Pictures'], on_new_file, on_new_file);
+var filemanager = new fm.FileManager('/home/lucan/Pictures', on_new_file, on_new_file);
 
 // use current for now
 var pantry      = new pt.Pantry('./');
@@ -29,7 +29,7 @@ function Import(file_list) {
 		var dest_file = path.join(dest_path, file['name']);
 
 		fs.access(dest_path, fs.R_OK | fs.W_OK, function(err) {
-			if (!err) {				
+			if (!err) {
 				copyFile(file['path'], dest_file, function(err) {});
 			} else {
 				fs.mkdir(dest_path, function(err) {

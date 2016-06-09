@@ -4,73 +4,85 @@ var fs   = require('fs')
 var path = require('path');
 
 // file meta-data analyzer
-var FileManager = function (data_home, dir_list, on_img, on_movie) {
+var FileManager = function (data_home, on_img, on_movie, file_imported) {
 	var data_home_   = data_home;
 	var photos_home_ = path.join(data_home_, 'photos');
-	var dir_list_ = dir_list;
 	var on_img_   = on_img;
 	var on_movie_ = on_movie;
+	var file_imported_ = file_imported;
 	var hash_     = new hash.FileHash();
 	var discovers_ = [];
 
 	this.DiscoverAndImportPath = DiscoverAndImportPath;
 
 	function DiscoverAndImportPath(folderPath) {
-		var discover = new fd.FileDiscover([folderPath], ['png','jpg','jpeg'], FoundFiles);
+		var discover = new fd.FileDiscover(folderPath, ['png','jpg','jpeg'], DiscoveredFile, DiscoverFinished);
 		discovers_.push(discover);
 	}
 
-	function FoundFiles(files) {
-		console.log("=======here are all found files:", files);
-		ImportToDataHome(files);
+	function DiscoveredFile(file) {
+		hash_.md5(file, OnHash);
 	}
 
-	function FoundFile(md) {
-		if (md.ext) {
-			if (md.ext === 'jpeg' || md.ext === 'jpg') {
-				md['type'] = 'image';
-				hash_.md5(md, OnHash);
-			} else if (md.ext === 'png') {
-				md['type'] = 'image';
-				hash_.md5(md, OnHash);
-			} else if (md.ext === 'mov') {
-				console.log("mov Not supported yet: ", md);
-			} else if (md.ext === 'flv') {
-				console.log("flv Not supported yet: ", md);
+	function DiscoverFinished(dir_path) {
+
+	}
+
+	function OnHash(file) {
+		if (file.ext) {
+			if (file.ext === 'jpeg' || file.ext === 'jpg') {
+				file['type'] = 'photo';
+				on_img_(file);
+			} else if (file.ext === 'png') {
+				file['type'] = 'photo';
+				on_img_(file);
+			} else if (file.ext === 'mov') {
+				console.log("mov Not supported yet: ", file);
+			} else if (file.ext === 'flv') {
+				console.log("flv Not supported yet: ", file);
 			} else {
-				console.log("Not supported data: ", md);
+				console.log("Not supported data: ", file);
+			}
+		}
+		ConvertExternalToDbFileRecord(file);
+		CopyToDataHome([file]);
+		file_imported_(file);
+	}
+
+  // File and Db index should sycn
+  //  - the same key to unique file
+	//  - the same attributes
+	function ConvertExternalToDbFileRecord(file) {
+		if (file.md5.length >= 8) {
+			file['id_name'] = file.md5.substring(0, 8)+'_'+file.name;
+			if (file.type === 'photo') {
+				var date_str  = file['birth_time'].substring(0, 10);
+				var dest_path = path.join(photos_home_, date_str);
+				file['id_dir']  = dest_path;
+				file['id_path'] = path.join(dest_path, file['id_name']);
+			} else if (file.type === 'movie') {
 			}
 		}
 	}
 
-	function OnHash(md) {
-		if (md) {
-			if (md.type === "image") {
-				on_img_(md);
-			} else if (md.type === "movie") {
-				on_movie_(md);
-			}
-		}
-	}
-
-	function ImportToDataHome(file_list) {
+	function CopyToDataHome(file_list) {
 		file_list.forEach(function (file, index, array) {
-			// compute destination path
-			var date_str  = file['birth_time'].substring(0, 10);
-			var dest_path = path.join(photos_home_, date_str);
-			var dest_file = path.join(dest_path, file['name']);
+			if (file.id_dir && file.id_path) {
+				var dest_path = file.id_dir;
+				var dest_file = file.id_path;
 
-			fs.access(dest_path, fs.R_OK | fs.W_OK, function(err) {
-				if (!err) {
-					copyFile(file['path'], dest_file, function(err) {});
-				} else {
-					fs.mkdir(dest_path, function(err) {
-						if (!err) {
-							copyFile(file['path'], dest_file, function(err) {});
-						}
-					});
-				}
-			});
+				fs.access(dest_path, fs.R_OK | fs.W_OK, function(err) {
+					if (!err) {
+						copyFile(file['path'], dest_file, function(err) {});
+					} else {
+						fs.mkdir(dest_path, function(err) {
+							if (!err) {
+								copyFile(file['path'], dest_file, function(err) {});
+							}
+						});
+					}
+				});
+			}
 		});
 	}
 
