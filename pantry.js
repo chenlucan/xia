@@ -21,7 +21,6 @@ var Pantry = function (db_home) {
 	}
 
 	function GetAll(on_file_record) {
-		console.log("====================GetAll======");
 		db.allDocs({
 			include_docs: true,
 		  	attachments: true

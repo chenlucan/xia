@@ -17,10 +17,6 @@ var db = new pantry.Pantry(db_home);
 db.GetAll(OnRecord);
 
 var fileMgr = new fm.FileManager([], function(){}, function(){});
-// fileMgr.DiscoverAndImportPath("/Users/lucan/");
-fileMgr.Gogo();
-console.log("===============FileManager====initialized in main===", fileMgr);
-fileMgr.Gogo();
 
 jQuery(document).ready(function($) {
 	IniializeTimeline();

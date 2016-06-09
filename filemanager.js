@@ -8,18 +8,12 @@ var FileManager = function (dir_list, on_img, on_movie) {
 	var on_movie_ = on_movie;
 	var hash_     = new hash.FileHash();
 	var discovers_ = [];
-  console.log("===============FileManager===constructor===");
 
 	this.DiscoverAndImportPath = DiscoverAndImportPath;
-	this.Gogo = function () {
-		console.log("========testing function Gogo");
-	}
 
 	function DiscoverAndImportPath(folderPath) {
-		console.log("===============DiscoverAndImportPath===1");
 		var discover = new fd.FileDiscover([folderPath], ['png','jpg','jpeg'], FoundFiles);
 		discovers_.push(discover);
-		console.log("===============DiscoverAndImportPath===2");
 	}
 
 	function FoundFiles(files) {

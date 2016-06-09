@@ -11,7 +11,7 @@ var FileDiscover = function(dir_list, type_list, on_files) {
   var found_files_ = [];
 
 	exploreAllDirs();
-  console.log("===============FileDiscover===1");
+
 	function exploreAllDirs() {
 		dir_list_.forEach(function (dir, index, array) {
 			var walker = walk.walk(dir, { followLinks: false });
@@ -76,7 +76,6 @@ var FileDiscover = function(dir_list, type_list, on_files) {
 	}
 
 	function endHandler() {
-    console.log("===============FileDiscover===endHandler");
     on_files_(found_files_);
   }
 
