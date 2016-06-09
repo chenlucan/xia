@@ -1,34 +1,88 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en" class="no-js">
 <head>
-  <title>Xia</title>
-  <script type="text/javascript" src="test_import.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/font.css"> <!-- http://fonts.googleapis.com/css?family=Droid+Serif|Open+Sans:400,700 -->
+	<link rel="stylesheet" href="css/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
+  <link rel="stylesheet" href="css/timeline_image.css"> <!-- Resource style -->
+	<script src="js/modernizr.js"></script> <!-- Modernizr -->
+  <script src="js/jquery-1.11.0.min.js"></script>
+	<title>Xia</title>
 </head>
 <body>
-<script type="text/javascript">
-	// it use Default as data home
-	console.log('default data home: ', nw.App.dataPath);
-	var path = require('path');
-	// we use pantry as our data home
-	console.log('app home: ', path.dirname(nw.App.dataPath));	
+	<header>
+			<div id="import-button">Move my photos in...</div>
+			<input id="folderSelector" type="file" nwdirectory/>
+	</header>
 
-	var data_home = path.join(path.dirname(nw.App.dataPath), 'pantry');
-	console.log('our data home: ', data_home);
+	<section id="cd-timeline" class="cd-container">
+		<div class="cd-timeline-block">
+			<div class="cd-timeline-img cd-picture">
+				<img src="img/cd-icon-picture.svg" alt="Picture">
+			</div> <!-- cd-timeline-img -->
+			<div class="cd-timeline-content">
+				<h2>Record your life</h2>
+				<p>Timeline organizes your data, make your life colorful. You data can be more fun and valuable.</p>
+				<a href="#0" class="cd-read-more">Read more</a>
+				<span class="cd-date">Jan 14</span>
+			</div> <!-- cd-timeline-content -->
+		</div> <!-- cd-timeline-block -->
+	</section> <!-- cd-timeline -->
 
-	var fs = require('fs');
-	SetUpPantry();
 
-	function SetUpPantry() {
-		fs.mkdir(data_home, function(err) {
-			if (!err) {
-				var photos_home = path.join(data_home, 'photos');
-				var db_home     = path.join(data_home, 'db');
+	<template id='img-template'>
+		<div class="cd-timeline-block">
+			<div class="cd-timeline-img cd-picture">
+				<img src="img/cd-icon-picture.svg" alt="Picture">
+			</div> <!-- cd-timeline-img -->
+			<div class="cd-timeline-content">
+				<h2></h2>
 
-				fs.mkdir(photos_home, function(err) {});
-				fs.mkdir(db_home, function(err) {});
-			}
-		});
-	}
-</script>
+				<div class="tl_responsive">
+				  <div class="tl_img">
+				    <a target="_blank" href="">
+				      <img src="" alt="" width="300" height="200">
+				    </a>
+				    <div class="tl_desc"></div>
+				  </div>
+				</div>
+				<div class="tl_responsive">
+				  <div class="tl_img">
+				    <a target="_blank" href="">
+				      <img src="" alt="" width="600" height="400">
+				    </a>
+				    <div class="tl_desc"></div>
+				  </div>
+				</div>
+				<div class="tl_responsive">
+				  <div class="tl_img">
+				    <a target="_blank" href="">
+				      <img src="" alt="" width="600" height="400">
+				    </a>
+				    <div class="tl_desc"></div>
+				  </div>
+				</div>
+				<div class="tl_responsive">
+				  <div class="tl_img">
+				    <a target="_blank" href="">
+				      <img src="" alt="" width="600" height="400">
+				    </a>
+				    <div class="tl_desc"></div>
+				  </div>
+				</div>
+				<div class="tl_clearfix"></div>
+
+				<p>Timeline organizes your data, make your life colorful. You data can be more fun and valuable.</p>
+				<a href="" class="cd-read-more">Read more</a>
+				<span class="cd-date">Jan 14</span>
+			</div> <!-- cd-timeline-content -->
+		</div> <!-- cd-timeline-block -->
+	</template>
+
+
+<!-- <script src="pantry.js"></script> -->
+<script src="main.js"></script>
 </body>
 </html>

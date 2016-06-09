@@ -5,25 +5,27 @@ var Pantry = function (db_home) {
 	var pantry_ = path.join(db_home, 'pantry_storage');
 	var db = new LevelPouchDB(pantry_);
 
-	this.SaveImg   = SaveImg;
+	this.SaveFile  = SaveFile;
 	this.GetAll    = GetAll;
 	this.GetByDate = GetByDate;
 	this.GetByType = GetByType;
 
 	SetUpIndex();
 
-	function SaveImg(img) {
-		img['_id'] = img['md5'];
-		db.put(img).then(function (response) {
-			// handle response
-		}).catch(function (err) {
-		});
+	function SaveFile(file) {
+		if (file.id_path) {
+			file['_id'] = file.id_path;
+			db.put(file).then(function (response) {
+				// handle response
+			}).catch(function (err) {
+			});
+		}
 	}
 
 	function GetAll(on_file_record) {
 		db.allDocs({
 			include_docs: true,
-		  	attachments: true
+	  	attachments: true
 		}).then(function (result) {
 			OnResult(result, on_file_record);
 		}).catch(function (err) {
@@ -35,20 +37,20 @@ var Pantry = function (db_home) {
 		db.query('birth_time_index', {
 			include_docs: true,
 		  	attachments: true,
-		  	startkey: iso_date, 
+		  	startkey: iso_date,
 		  	endkey: iso_date+'\uffff'
 		}).then(function (result) {
 			OnResult(result, on_file_record);
 		}).catch(function (err) {
 		  	console.log(err);
 		});
-	}	
+	}
 
 	function GetByType(type, on_file_record) {
 		db.query('type_index', {
 			include_docs: true,
 		  	attachments: true,
-		  	startkey: type, 
+		  	startkey: type,
 		  	endkey: type+'\uffff'
 		}).then(function (result) {
 			OnResult(result, on_file_record);

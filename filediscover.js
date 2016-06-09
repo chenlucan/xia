@@ -1,35 +1,37 @@
 "use strict";
 
-var walk  = require('walk'), 
+var walk  = require('walk'),
   	path  = require('path');
 
-// on_file(file_ext, abs_path)
-var FileDiscover = function(dir_list, type_list, on_file) {
-	var dir_list_  = Array.isArray(dir_list) ? dir_list : [];
-	var type_list_ = Array.isArray(type_list) ? type_list : ['png', 'jpg', 'jpeg'];
-	var on_file_   = on_file;
+// on_file(file_object)
+// on_finished(dir_path)
+var FileDiscover = function(dir_path, type_list, on_file, on_finished) {
+  var dir_path_    = dir_path;
+	var type_list_   = Array.isArray(type_list) ? type_list : ['png', 'jpg', 'jpeg'];
+	var on_file_     = on_file;
+  var on_finished_ = on_finished;
+  var found_files_ = [];
+  var walker_      = null;
 
 	exploreAllDirs();
 
 	function exploreAllDirs() {
-		dir_list_.forEach(function (dir, index, array) {
-			var walker = walk.walk(dir, { followLinks: false });
+		walker_ = walk.walk(dir_path_, { followLinks: false });
 
-			// all events are here
-			// All single event callbacks are in the form of function (root, stat, next) {}.
-			// All multiple event callbacks callbacks are in the form of function (root, stats, next) {}, except names which is an array of strings.
-			// All error event callbacks are in the form function (root, stat/stats, next) {}. stat.error contains the error.
+		// all events are here
+		// All single event callbacks are in the form of function (root, stat, next) {}.
+		// All multiple event callbacks callbacks are in the form of function (root, stats, next) {}, except names which is an array of strings.
+		// All error event callbacks are in the form function (root, stat/stats, next) {}. stat.error contains the error.
 
-			walker.on("names",          namesHandler);
-			walker.on("directory",      directoryHandler);
-			walker.on("directories",    directoriesHandler);
-			walker.on("file",           fileHandler);
-			walker.on("files",          filesHandler);
-			walker.on("end",            endHandler);
-			walker.on("nodeError",      nodeErrorHandler);      //(stat failed)
-			walker.on("directoryError", directoryErrorHandler); // (stat succedded, but readdir failed)
-			walker.on("errors",         errorsHandler);         //(a collection of any errors encountered)
-		});
+		walker_.on("names",          namesHandler);
+		walker_.on("directory",      directoryHandler);
+		walker_.on("directories",    directoriesHandler);
+		walker_.on("file",           fileHandler);
+		walker_.on("files",          filesHandler);
+		walker_.on("end",            endHandler);
+		walker_.on("nodeError",      nodeErrorHandler);      //(stat failed)
+		walker_.on("directoryError", directoryErrorHandler); // (stat succedded, but readdir failed)
+		walker_.on("errors",         errorsHandler);         //(a collection of any errors encountered)
 	}
 
 	function namesHandler(root, nodeNamesArray) {}
@@ -43,7 +45,7 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 	}
 
 	function fileHandler(root, stat, next) {
-		var ext = path.extname(stat.name).substring(1);		
+		var ext = path.extname(stat.name).substring(1);
 		for (var i in type_list_) {
 			var type = type_list_[i];
 			if (ext.toUpperCase() === type || ext.toLowerCase() === type) {
@@ -64,7 +66,8 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 				md['access_time'] = stat.atime.toISOString();
 				md['modify_time'] = stat.mtime.toISOString();
 				md['change_time'] = stat.ctime.toISOString();
-				on_file_(md);
+				found_files_.push(md);
+        on_file_(md);
 			}
 		}
 		next();
@@ -74,7 +77,9 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 		next();
 	}
 
-	function endHandler() {}
+	function endHandler() {
+    on_finished_(dir_path_);
+  }
 
 	function nodeErrorHandler(root, stat, next) {
 		next();
@@ -90,4 +95,3 @@ var FileDiscover = function(dir_list, type_list, on_file) {
 };
 
 module.exports.FileDiscover = FileDiscover;
-
