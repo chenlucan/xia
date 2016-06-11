@@ -41,19 +41,21 @@ var doccc = { hello: 'world'
                , fruits: [ 'apple', 'orange', 'pear' ]
                , infos: { name: 'nedb' }
                };
-inbrow_nedb.insert(doccc, function(err, newDoc) {
+
+console.log('inbrow_nedb=================insert===', inbrow_nedb.insert);
+var insert1 = inbrow_nedb.insert(doccc, function(err, newDoc) {
 	console.log('inbrow_nedb=================insert file1:', err, "===========", newDoc);
 });
+console.log('===============================insert 1==',insert1);
 
-
-inbrow_nedb.insert(test_file2, function(err, newDoc) {
+var insert2 = inbrow_nedb.insert(test_file2, function(err, newDoc) {
 	console.log('inbrow_nedb=================insert file2:', err, "===========", newDoc);
 });
-
-inbrow_nedb.find({}, function (err, docs) {
+console.log('===============================insert 2==',insert2);
+var findAll = inbrow_nedb.find({}, function (err, docs) {
 	console.log('inbrow_nedb=================find all docs:', err, "===========", docs);
 });
-console.log('==================set up inbrow_nedb=============');
+console.log('==================set up inbrow_nedb=============findAll==',findAll);
 </script>
 
 	<header>
