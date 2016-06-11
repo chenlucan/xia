@@ -2,7 +2,7 @@ var path   = require('path');
 var fs     = require('fs');
 
 var fm     = require('./filemanager.js');
-var pantry = require('./pantry.js');
+var pantry = require('./pantry_pouchdb.js');
 
 // we use pantry as our data home
 console.log('app home: ', path.dirname(nw.App.dataPath));
@@ -10,6 +10,50 @@ var data_home   = path.join(path.dirname(nw.App.dataPath), 'pantry');
 var photos_home = path.join(data_home, 'photos');
 var db_home     = path.join(data_home, 'db');
 var records_by_date = {};
+
+
+
+var NeDBStore = require('nedb');
+var test_nedb = new NeDBStore(path.join(db_home, 'test_nedb.nedb'));
+
+test_nedb.ensureIndex({fieldName: 'birth_time'}, function(err) {
+	console.log('==================created index birth_time');
+});
+test_nedb.ensureIndex({fieldName: 'type'}, function(err) {
+	console.log('==================created index type');
+});
+var test_file1 = {
+	'_id':'file1',
+	'birth_time': '20160102T23:23:23',
+	'type':'photo'
+}
+var test_file2 = {
+	'_id':'file2',
+	'birth_time': '20160102T23:23:23',
+	'type':'photo'
+}
+var doccc = { hello: 'world'
+               , n: 5
+               , today: new Date()
+               , nedbIsAwesome: true
+               , notthere: null
+               , notToBeSaved: undefined  // Will not be saved
+               , fruits: [ 'apple', 'orange', 'pear' ]
+               , infos: { name: 'nedb' }
+               };
+test_nedb.insert(doccc, function(err, newDoc) {
+	console.log('=================insert file1:', err, "===========", newDoc);
+});
+
+
+test_nedb.insert(test_file2, function(err, newDoc) {
+	console.log('=================insert file2:', err, "===========", newDoc);
+});
+
+test_nedb.find({}, function (err, docs) {
+	console.log('=================find all docs:', err, "===========", docs);
+});
+console.log('==================set up nedb=============');
 
 InitializeInstallation();
 
