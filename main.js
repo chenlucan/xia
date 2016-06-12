@@ -2,7 +2,7 @@ var path   = require('path');
 var fs     = require('fs');
 
 var fm     = require('./filemanager.js');
-var pantry = require('./pantry.js');
+var pantry_nedb = require('./pantry_nedb.js');
 
 // we use pantry as our data home
 console.log('app home: ', path.dirname(nw.App.dataPath));
@@ -13,8 +13,8 @@ var records_by_date = {};
 
 InitializeInstallation();
 
-var db = new pantry.Pantry(db_home);
-db.GetAll(OnRecord);
+var db = new pantry_nedb.Pantry(db_home);
+db.GetAll(OnRecords);
 
 var fileMgr = new fm.FileManager(data_home, function(){}, function(){}, FileImported);
 
@@ -78,24 +78,26 @@ jQuery(document).ready(function($) {
 
 
 // function definitions
-function OnRecord(record) {
-	if (record['type'] === 'image') {
-		var bdate = new Date(record['birth_time']);
-		var y = bdate.getFullYear() + '';
-		var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1);
-		var d = bdate.getDate();
-		var k = y + '' + m + '' + d;
-		if (!(k in records_by_date)) {
-			records_by_date[k] = [record];
-			console.log('record key=========', k);
-		} else {
-			records_by_date[k].push(record);
-			console.log('date length=========', k, '====', records_by_date[k].length);
-			if (records_by_date[k].length === 4) {
-				AddImageTimePoint(records_by_date[k]);
+function OnRecords(records) {
+	records.forEach(function(record, index, arr) {
+		if (record['type'] === 'photo') {
+			var bdate = new Date(record['birth_time']);
+			var y = bdate.getFullYear() + '';
+			var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1);
+			var d = bdate.getDate();
+			var k = y + '' + m + '' + d;
+			if (!(k in records_by_date)) {
+				records_by_date[k] = [record];
+				console.log('record key=========', k);
+			} else {
+				records_by_date[k].push(record);
+				console.log('date length=========', k, '====', records_by_date[k].length);
+				if (records_by_date[k].length === 4) {
+					AddImageTimePoint(records_by_date[k]);
+				}
 			}
 		}
-	}
+	});
 }
 
 function FileImported(file) {
@@ -139,9 +141,9 @@ function AddImageTimePoint(files) {
 
 // only effective for app first time setup
 function InitializeInstallation() {
-	SetUpPantry();
+	SetUpPantryDir();
 
-	function SetUpPantry() {
+	function SetUpPantryDir() {
 		fs.mkdir(data_home, function(err) {
 			if (!err) {
 				fs.mkdir(photos_home, function(err) {});

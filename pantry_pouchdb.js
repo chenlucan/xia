@@ -26,8 +26,8 @@ var Pantry = function (db_home) {
 		db.allDocs({
 			include_docs: true,
 	  	attachments: true
-		}).then(function (result) {
-			OnResult(result, on_file_record);
+		}).then(function (results) {
+			on_file_records(results);
 		}).catch(function (err) {
 		  	console.log(err);
 		});
@@ -39,8 +39,8 @@ var Pantry = function (db_home) {
 		  	attachments: true,
 		  	startkey: iso_date,
 		  	endkey: iso_date+'\uffff'
-		}).then(function (result) {
-			OnResult(result, on_file_record);
+		}).then(function (results) {
+			on_file_records(results);
 		}).catch(function (err) {
 		  	console.log(err);
 		});
@@ -52,8 +52,8 @@ var Pantry = function (db_home) {
 		  	attachments: true,
 		  	startkey: type,
 		  	endkey: type+'\uffff'
-		}).then(function (result) {
-			OnResult(result, on_file_record);
+		}).then(function (results) {
+			on_file_records(results);
 		}).catch(function (err) {
 		  	console.log(err);
 		});
@@ -79,12 +79,6 @@ var Pantry = function (db_home) {
 		};
 		doc.views[name] = { map: mapFunction.toString() };
 		return doc;
-	}
-
-	function OnResult(result, on_file_record) {
-		for (var i in result.rows) {
-			on_file_record(result.rows[i]);
-		}
 	}
 }
 
