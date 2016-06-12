@@ -13,51 +13,6 @@
 	<title>Xia</title>
 </head>
 <body>
-<script>
-var inbrow_nedb = new Nedb('inbrow_nedb.nedb');
-
-inbrow_nedb.ensureIndex({fieldName: 'birth_time'}, function(err) {
-	console.log('inbrow_nedb==================created index birth_time');
-});
-inbrow_nedb.ensureIndex({fieldName: 'type'}, function(err) {
-	console.log('inbrow_nedb==================created index type');
-});
-var test_file1 = {
-	'_id':'file1',
-	'birth_time': '20160102T23:23:23',
-	'type':'photo'
-}
-var test_file2 = {
-	'_id':'file2',
-	'birth_time': '20160102T23:23:23',
-	'type':'photo'
-}
-var doccc = { hello: 'world'
-               , n: 5
-               , today: new Date()
-               , nedbIsAwesome: true
-               , notthere: null
-               , notToBeSaved: undefined  // Will not be saved
-               , fruits: [ 'apple', 'orange', 'pear' ]
-               , infos: { name: 'nedb' }
-               };
-
-console.log('inbrow_nedb=================insert===', inbrow_nedb.insert);
-var insert1 = inbrow_nedb.insert(doccc, function(err, newDoc) {
-	console.log('inbrow_nedb=================insert file1:', err, "===========", newDoc);
-});
-console.log('===============================insert 1==',insert1);
-
-var insert2 = inbrow_nedb.insert(test_file2, function(err, newDoc) {
-	console.log('inbrow_nedb=================insert file2:', err, "===========", newDoc);
-});
-console.log('===============================insert 2==',insert2);
-var findAll = inbrow_nedb.find({}, function (err, docs) {
-	console.log('inbrow_nedb=================find all docs:', err, "===========", docs);
-});
-console.log('==================set up inbrow_nedb=============findAll==',findAll);
-</script>
-
 	<header>
 			<div id="import-button">Move my photos in...</div>
 			<input id="folderSelector" type="file" nwdirectory/>

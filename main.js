@@ -2,7 +2,7 @@ var path   = require('path');
 var fs     = require('fs');
 
 var fm     = require('./filemanager.js');
-var pantry = require('./pantry_pouchdb.js');
+var pantry_nedb = require('./pantry_nedb.js');
 
 // we use pantry as our data home
 console.log('app home: ', path.dirname(nw.App.dataPath));
@@ -11,54 +11,10 @@ var photos_home = path.join(data_home, 'photos');
 var db_home     = path.join(data_home, 'db');
 var records_by_date = {};
 
-
-
-var NeDBStore = require('nedb');
-var test_nedb = new NeDBStore(path.join(db_home, 'test_nedb.nedb'));
-
-test_nedb.ensureIndex({fieldName: 'birth_time'}, function(err) {
-	console.log('==================created index birth_time');
-});
-test_nedb.ensureIndex({fieldName: 'type'}, function(err) {
-	console.log('==================created index type');
-});
-var test_file1 = {
-	'_id':'file1',
-	'birth_time': '20160102T23:23:23',
-	'type':'photo'
-}
-var test_file2 = {
-	'_id':'file2',
-	'birth_time': '20160102T23:23:23',
-	'type':'photo'
-}
-var doccc = { hello: 'world'
-               , n: 5
-               , today: new Date()
-               , nedbIsAwesome: true
-               , notthere: null
-               , notToBeSaved: undefined  // Will not be saved
-               , fruits: [ 'apple', 'orange', 'pear' ]
-               , infos: { name: 'nedb' }
-               };
-test_nedb.insert(doccc, function(err, newDoc) {
-	console.log('=================insert file1:', err, "===========", newDoc);
-});
-
-
-test_nedb.insert(test_file2, function(err, newDoc) {
-	console.log('=================insert file2:', err, "===========", newDoc);
-});
-
-test_nedb.find({}, function (err, docs) {
-	console.log('=================find all docs:', err, "===========", docs);
-});
-console.log('==================set up nedb=============');
-
 InitializeInstallation();
 
-var db = new pantry.Pantry(db_home);
-db.GetAll(OnRecord);
+var db = new pantry_nedb.Pantry(db_home);
+db.GetAll(OnRecords);
 
 var fileMgr = new fm.FileManager(data_home, function(){}, function(){}, FileImported);
 
@@ -122,24 +78,26 @@ jQuery(document).ready(function($) {
 
 
 // function definitions
-function OnRecord(record) {
-	if (record['type'] === 'image') {
-		var bdate = new Date(record['birth_time']);
-		var y = bdate.getFullYear() + '';
-		var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1);
-		var d = bdate.getDate();
-		var k = y + '' + m + '' + d;
-		if (!(k in records_by_date)) {
-			records_by_date[k] = [record];
-			console.log('record key=========', k);
-		} else {
-			records_by_date[k].push(record);
-			console.log('date length=========', k, '====', records_by_date[k].length);
-			if (records_by_date[k].length === 4) {
-				AddImageTimePoint(records_by_date[k]);
+function OnRecords(records) {
+	records.forEach(function(record, index, arr) {
+		if (record['type'] === 'photo') {
+			var bdate = new Date(record['birth_time']);
+			var y = bdate.getFullYear() + '';
+			var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1);
+			var d = bdate.getDate();
+			var k = y + '' + m + '' + d;
+			if (!(k in records_by_date)) {
+				records_by_date[k] = [record];
+				console.log('record key=========', k);
+			} else {
+				records_by_date[k].push(record);
+				console.log('date length=========', k, '====', records_by_date[k].length);
+				if (records_by_date[k].length === 4) {
+					AddImageTimePoint(records_by_date[k]);
+				}
 			}
 		}
-	}
+	});
 }
 
 function FileImported(file) {
@@ -183,9 +141,9 @@ function AddImageTimePoint(files) {
 
 // only effective for app first time setup
 function InitializeInstallation() {
-	SetUpPantry();
+	SetUpPantryDir();
 
-	function SetUpPantry() {
+	function SetUpPantryDir() {
 		fs.mkdir(data_home, function(err) {
 			if (!err) {
 				fs.mkdir(photos_home, function(err) {});
