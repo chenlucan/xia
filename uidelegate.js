@@ -39,13 +39,15 @@ var TLManager = function() {
       GetNode(date_id);
       var node = document.body.querySelector('#id-'+date_id);
       var node_content = node.querySelector('.cd-timeline-content');
-      var photos4 = node_content.getElementsByClassName('tl_responsive');
-      var empty_div = photos4[tl_nodes_[date_id]['img_count']];
+
+      var img_ph = document.body.querySelector('#img-placeholder-template');
+      var empty_div = img_ph.content.querySelector('.tl_responsive');
       empty_div.querySelector('a').href  = 'file://'+record['path'];
       empty_div.querySelector('img').src = 'file://'+record['path'];
       empty_div.querySelector('img').alt = record['name'];
       empty_div.querySelector('.tl_desc').innerHTML   = ""
-
+      var clone = document.importNode(empty_div, true);
+      node_content.insertBefore(clone, node_content.childNodes[1]);
       tl_nodes_[date_id]['img_count'] += 1;
 		}
   }
