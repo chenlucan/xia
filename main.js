@@ -17,6 +17,7 @@ var db = new pantry_nedb.Pantry(db_home);
 db.GetAll(OnRecords);
 
 var fileMgr = new fm.FileManager(data_home, function(){}, function(){}, FileImported);
+var uiDelegate = new UIDelegate();
 
 jQuery(document).ready(function($) {
 	IniializeTimeline();
@@ -80,63 +81,13 @@ jQuery(document).ready(function($) {
 // function definitions
 function OnRecords(records) {
 	records.forEach(function(record, index, arr) {
-		if (record['type'] === 'photo') {
-			var bdate = new Date(record['birth_time']);
-			var y = bdate.getFullYear() + '';
-			var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1);
-			var d = bdate.getDate();
-			var k = y + '' + m + '' + d;
-			if (!(k in records_by_date)) {
-				records_by_date[k] = [record];
-				console.log('record key=========', k);
-			} else {
-				records_by_date[k].push(record);
-				console.log('date length=========', k, '====', records_by_date[k].length);
-				if (records_by_date[k].length === 4) {
-					AddImageTimePoint(records_by_date[k]);
-				}
-			}
-		}
+		uiDelegate.Update(record);
 	});
 }
 
 function FileImported(file) {
 	db.SaveFile(file);
-}
-
-function AddImageTimePoint(files) {
-	var t = document.querySelector('#img-template');
-	console.log('====================', t);
-	var tems = t.content.querySelector('.cd-timeline-content');
-	console.log('======================',tems);
-	tems.querySelector('h2').innerHTML = "National reserve park";
-	var imgs = tems.getElementsByClassName('tl_responsive');
-	console.log('=================',imgs);
-
-	imgs[0].querySelector('a').href  = 'file://'+files[0]['path'];
-	imgs[0].querySelector('img').src = 'file://'+files[0]['path'];
-	imgs[0].querySelector('img').alt = files[0]['name'];
-	imgs[0].querySelector('.tl_desc').innerHTML   = "First image of the day"
-
-	imgs[1].querySelector('a').href  = 'file://'+files[1]['path'];
-	imgs[1].querySelector('img').src = 'file://'+files[1]['path'];
-	imgs[1].querySelector('img').alt = files[1]['name'];
-	imgs[1].querySelector('.tl_desc').innerHTML   = "2nd image of the day"
-
-	imgs[2].querySelector('a').href  = 'file://'+files[2]['path'];
-	imgs[2].querySelector('img').src = 'file://'+files[2]['path'];
-	imgs[2].querySelector('img').alt = files[2]['name'];
-	imgs[2].querySelector('.tl_desc').innerHTML   = "3rd image of the day"
-
-	imgs[3].querySelector('a').href  = 'file://'+files[3]['path'];
-	imgs[3].querySelector('img').src = 'file://'+files[3]['path'];
-	imgs[3].querySelector('img').alt = files[3]['name'];
-	imgs[3].querySelector('.tl_desc').innerHTML   = "4th image of the day"
-
-	var clone = document.importNode(t.content, true);
-	var tl = document.body.querySelector('#cd-timeline');
-
-	tl.insertBefore(clone, tl.firstChild);
+	OnRecords([file]);
 }
 
 // only effective for app first time setup
