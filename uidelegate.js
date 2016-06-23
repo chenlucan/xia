@@ -43,6 +43,7 @@ var TLManager = function() {
       var img_ph = document.body.querySelector('#img-placeholder-template');
       var empty_div = img_ph.content.querySelector('.tl_responsive');
       empty_div.querySelector('a').href  = 'file://'+record['path'];
+      empty_div.querySelector('a').setAttribute('data-lightbox', date_id);
       empty_div.querySelector('img').src = 'file://'+record['path'];
       empty_div.querySelector('img').alt = record['name'];
       empty_div.querySelector('.tl_desc').innerHTML   = ""
