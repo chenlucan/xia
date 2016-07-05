@@ -48,7 +48,7 @@ var TLManager = function() {
       empty_div.querySelector('a').href  = 'file:///'+record['id_path'];
       empty_div.querySelector('a').setAttribute('data-lightbox', date_id);
       empty_div.querySelector('img').alt = record['name'];
-      empty_div.querySelector('.tl_desc').innerHTML   = ""
+      // empty_div.querySelector('.tl_desc').innerHTML   = ""
 
       var clone = document.importNode(empty_div, true);
       var all_imgs = node_content.getElementsByClassName('tl_responsive');

@@ -54,7 +54,7 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 	//  - the same attributes
 	function ConvertExternalToDbFileRecord(file) {
 		if (file.md5.length >= 8) {
-			file['id_name'] = file.md5.substring(0, 8)+'_'+file.name;
+			file['id_name'] = file.name+'_'+file.md5.substring(0, 8);
 			if (file.type === 'photo') {
 				var date_str  = file['birth_time'].substring(0, 10);
 				var dest_path = path.join(photos_home_, date_str);
