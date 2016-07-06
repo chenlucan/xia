@@ -81,7 +81,14 @@ jQuery(document).ready(function($) {
 // function definitions
 function OnRecords(records) {
 	records.forEach(function(record, index, arr) {
-		uiDelegate.Update(record);
+		fs.stat(record['id_path'], function(err, stats) {
+			if (err) {
+				console.log('DB file record has error:', err);
+				db.Remove(record['id_path']);
+				return;
+			}
+			uiDelegate.Update(record);
+		})
 	});
 }
 

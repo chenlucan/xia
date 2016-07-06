@@ -54,7 +54,13 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 	//  - the same attributes
 	function ConvertExternalToDbFileRecord(file) {
 		if (file.md5.length >= 8) {
-			file['id_name'] = file.name+'_'+file.md5.substring(0, 8);
+			var n = file.name.lastIndexOf(".");
+			if (n === -1) {
+				return;
+			}
+			var basename = file.name.substring(0, n);
+			var extname  = file.name.substring(n+1);
+			file['id_name'] = basename+'_'+file.md5.substring(0, 8)+'.'+extname;
 			if (file.type === 'photo') {
 				var date_str  = file['birth_time'].substring(0, 10);
 				var dest_path = path.join(photos_home_, date_str);
