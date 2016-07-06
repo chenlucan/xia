@@ -45,8 +45,9 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 			}
 		}
 		ConvertExternalToDbFileRecord(file);
-		CopyToDataHome([file]);
-		file_imported_(file);
+		CopyToDataHome([file], function(file) {
+			file_imported_(file);
+		});
 	}
 
   // File and Db index should sycn
@@ -71,7 +72,7 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 		}
 	}
 
-	function CopyToDataHome(file_list) {
+	function CopyToDataHome(file_list, success_cb) {
 		file_list.forEach(function (file, index, array) {
 			if (file.id_dir && file.id_path) {
 				var dest_path = file.id_dir;
@@ -83,7 +84,11 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 					} else {
 						fs.mkdir(dest_path, function(err) {
 							if (!err) {
-								copyFile(file['path'], dest_file, function(err) {});
+								copyFile(file['path'], dest_file, function(err) {
+									if (!err) {
+											success_cb(file);
+									}
+								});
 							}
 						});
 					}
