@@ -18,6 +18,7 @@ var TLManager = function() {
   // {id:date_id, img_count:max 4, img_node: html element}
   var max_img_count_ = 4;
   var tl_nodes_ = {};
+  var tl_nodes_index_ = [];
 
   this.AddRecord = AddRecord;
 
@@ -25,8 +26,8 @@ var TLManager = function() {
 		if (record['type'] === 'photo') {
 			var bdate = new Date(record['birth_time']);
 			var y = bdate.getFullYear() + '';
-			var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1);
-			var d = bdate.getDate();
+			var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1); // storting from 0==Jan
+			var d = (bdate.getDate()  <= 9 ? '0' : '')+(bdate.getDate()); //starting from 1
 			var date_id = y + '年' + m + '月' + d + '日';
 
       // {id:date_id, img_count:max 4, img_node: html element}
@@ -62,6 +63,26 @@ var TLManager = function() {
       return tl_nodes_[date_id];
     }
 
+    // determine its position
+    tl_nodes_index_.push(date_id);
+    var c_length = tl_nodes_index_.length;
+    tl_nodes_index_ = tl_nodes_index_.sort(function(a,b) { return (a < b); });
+    var new_node_index = tl_nodes_index_.indexOf(date_id);
+    if (new_node_index === -1) {
+      console.log("Error: this element justed pushed, has to be present.");
+      return;
+    }
+
+    var tl = document.body.querySelector('#cd-timeline');
+    var next_node_ref = tl.firstChild;  // assume new_node_index == 0
+    var temp_tl = tl;
+    if (new_node_index < tl_nodes_index_.length - 1) {
+      // new node is not the last oner
+      next_node_ref = document.body.querySelector('#id-'+tl_nodes_index_[new_node_index + 1]);
+    } else if (new_node_index === tl_nodes_index_.length - 1) {
+      next_node_ref = document.body.querySelector('#init-tl-block');
+    }
+
     var t = document.body.querySelector('#img-template');
     var tems = t.content.querySelector('.cd-timeline-block');
     tems.querySelector('h2').innerHTML = "";
@@ -69,12 +90,13 @@ var TLManager = function() {
     var tems_content = tems.querySelector('.cd-timeline-content');
     tems_content.querySelector('.cd-date').innerHTML = date_id;
     var clone = document.importNode(tems, true);
-    var tl = document.body.querySelector('#cd-timeline');
-    tl.insertBefore(clone, tl.firstChild);
+
+    tl.insertBefore(clone, next_node_ref);
     tl_nodes_[date_id] = {
                       'id':date_id,
                       'img_count': 0,
-                      'node':clone
+                      'node':clone,
+                      'position': new_node_index,
                    };
     return tl_nodes_[date_id];
   }

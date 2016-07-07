@@ -21,4 +21,5 @@ indexeddb - NoSQL
 Todo:
  - db not exist, file exit in pantry home
  - avoid importing pantry home into itself
- - new imported not shown on timeline correct place
+ - [fixed] new imported not shown on timeline correct place
+ - new imported photos only shows one in timeline
