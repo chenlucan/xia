@@ -14,7 +14,7 @@ var records_by_date = {};
 InitializeInstallation();
 
 var db = new pantry_nedb.Pantry(db_home);
-db.GetAll(OnRecords);
+db.GetAll(OnDBRecords);
 
 var fileMgr = new fm.FileManager(data_home, function(){}, function(){}, FileImported);
 var uiDelegate = new UIDelegate();
@@ -79,6 +79,19 @@ jQuery(document).ready(function($) {
 
 
 // function definitions
+function OnDBRecords(records) {
+	records.forEach(function(record, index, arr) {
+		fs.stat(record['id_path'], function(err, stats) {
+			if (err) {
+				console.log('DB file record has error:', err);
+				db.Remove(record['id_path']);
+				return;
+			}
+			OnRecords([record]);
+		})
+	});
+}
+
 function OnRecords(records) {
 	records.forEach(function(record, index, arr) {
 		uiDelegate.Update(record);

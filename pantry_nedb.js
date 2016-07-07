@@ -19,12 +19,17 @@ var Pantry = function (db_home) {
 	var pantry_ = path.join(db_home, 'pantry.nedb');
 	var db_ = new Datastore({filename: pantry_, autoload: true});
 
+	this.Remove    = Remove;
 	this.SaveFile  = SaveFile;
 	this.GetAll    = GetAll;
 	this.GetByDate = GetByDate;
 	this.GetByType = GetByType;
 
 	SetUpIndex();
+
+	function Remove(file_id_path) {
+		db_.remove({ _id: file_id_path }, {}, function (err, numRemoved) {});
+	}
 
 	function SaveFile(file) {
 		file['_id'] = file['id_path']

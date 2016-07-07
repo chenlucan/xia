@@ -45,8 +45,9 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 			}
 		}
 		ConvertExternalToDbFileRecord(file);
-		CopyToDataHome([file]);
-		file_imported_(file);
+		CopyToDataHome([file], function(file) {
+			file_imported_(file);
+		});
 	}
 
   // File and Db index should sycn
@@ -54,7 +55,13 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 	//  - the same attributes
 	function ConvertExternalToDbFileRecord(file) {
 		if (file.md5.length >= 8) {
-			file['id_name'] = file.md5.substring(0, 8)+'_'+file.name;
+			var n = file.name.lastIndexOf(".");
+			if (n === -1) {
+				return;
+			}
+			var basename = file.name.substring(0, n);
+			var extname  = file.name.substring(n+1);
+			file['id_name'] = basename+'_'+file.md5.substring(0, 8)+'.'+extname;
 			if (file.type === 'photo') {
 				var date_str  = file['birth_time'].substring(0, 10);
 				var dest_path = path.join(photos_home_, date_str);
@@ -65,7 +72,7 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 		}
 	}
 
-	function CopyToDataHome(file_list) {
+	function CopyToDataHome(file_list, success_cb) {
 		file_list.forEach(function (file, index, array) {
 			if (file.id_dir && file.id_path) {
 				var dest_path = file.id_dir;
@@ -77,7 +84,11 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 					} else {
 						fs.mkdir(dest_path, function(err) {
 							if (!err) {
-								copyFile(file['path'], dest_file, function(err) {});
+								copyFile(file['path'], dest_file, function(err) {
+									if (!err) {
+											success_cb(file);
+									}
+								});
 							}
 						});
 					}

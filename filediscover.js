@@ -55,7 +55,7 @@ var FileDiscover = function(dir_path, type_list, on_file, on_finished) {
 				md['ext']  = ext.toLowerCase();
 				md['path'] = full_path;
 
-				if (stat.birthtime) {
+				if (stat.birthtime && stat.birthtime < stat.mtime) {
 					// linux does not return this attribute
 					md['birth_time']  = stat.birthtime.toISOString();
 				} else {
@@ -63,6 +63,9 @@ var FileDiscover = function(dir_path, type_list, on_file, on_finished) {
 				}
 
 				// time object
+        // ctime is the inode or file change time
+        // mtime is the file modify time.
+        // atime is the file access time.
 				md['access_time'] = stat.atime.toISOString();
 				md['modify_time'] = stat.mtime.toISOString();
 				md['change_time'] = stat.ctime.toISOString();
