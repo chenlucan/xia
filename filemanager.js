@@ -21,6 +21,7 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 	}
 
 	function DiscoveredFile(file) {
+		console.log('==DiscoveredFile=',file);
 		hash_.md5(file, OnHash);
 	}
 
@@ -46,6 +47,7 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 		}
 		ConvertExternalToDbFileRecord(file);
 		CopyToDataHome([file], function(file) {
+			console.log('====CopyToDataHome Done ===',file);
 			file_imported_(file);
 		});
 	}
@@ -74,19 +76,28 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 
 	function CopyToDataHome(file_list, success_cb) {
 		file_list.forEach(function (file, index, array) {
+			console.log('===CopyToDataHome forEach===',file);
 			if (file.id_dir && file.id_path) {
 				var dest_path = file.id_dir;
 				var dest_file = file.id_path;
 
 				fs.access(dest_path, fs.R_OK | fs.W_OK, function(err) {
 					if (!err) {
-						copyFile(file['path'], dest_file, function(err) {});
+						console.log('==============1=======');
+						copyFile(file['path'], dest_file, function(err) {
+							console.log('==============1=1======');
+							if (!err) {
+								success_cb(file);
+							}
+						});
 					} else {
+						console.log('==============2=======');
 						fs.mkdir(dest_path, function(err) {
+							console.log('==============2=2======');
 							if (!err) {
 								copyFile(file['path'], dest_file, function(err) {
 									if (!err) {
-											success_cb(file);
+										success_cb(file);
 									}
 								});
 							}

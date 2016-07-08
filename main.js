@@ -80,6 +80,7 @@ jQuery(document).ready(function($) {
 
 // function definitions
 function OnDBRecords(records) {
+	console.log('====OnDBRecords=',records);
 	records.forEach(function(record, index, arr) {
 		fs.stat(record['id_path'], function(err, stats) {
 			if (err) {

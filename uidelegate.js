@@ -33,6 +33,7 @@ var TLManager = function() {
       // {id:date_id, img_count:max 4, img_node: html element}
       GetNode(date_id);
 
+     console.log(date_id,'==================adding image==',record);
       var node = document.body.querySelector('#id-'+date_id);
       var node_content = node.querySelector('.cd-timeline-content');
 
@@ -63,6 +64,7 @@ var TLManager = function() {
       return tl_nodes_[date_id];
     }
 
+    console.log('==================adding node==',date_id);
     // determine its position
     tl_nodes_index_.push(date_id);
     var c_length = tl_nodes_index_.length;
@@ -109,6 +111,7 @@ var UIDelegate = function() {
   this.Update = Update;
 
   function Update(record) {
+    console.log('========================UIDelegate Update=',record);
     recordMgr_.Update(record, OnNewRecord);
   }
 
