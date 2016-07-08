@@ -80,13 +80,17 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 
 				fs.access(dest_path, fs.R_OK | fs.W_OK, function(err) {
 					if (!err) {
-						copyFile(file['path'], dest_file, function(err) {});
+						copyFile(file['path'], dest_file, function(err) {
+							if (!err) {
+								success_cb(file);
+							}
+						});
 					} else {
 						fs.mkdir(dest_path, function(err) {
 							if (!err) {
 								copyFile(file['path'], dest_file, function(err) {
 									if (!err) {
-											success_cb(file);
+										success_cb(file);
 									}
 								});
 							}
