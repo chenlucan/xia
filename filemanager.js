@@ -1,7 +1,8 @@
+var fs   = require('fs-extra')
+var path = require('path');
+
 var fd   = require("./filediscover.js");
 var hash = require("./filehash.js");
-var fs   = require('fs')
-var path = require('path');
 
 // file meta-data analyzer
 var FileManager = function (data_home, on_img, on_movie, file_imported) {
@@ -80,18 +81,16 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 
 				fs.access(dest_path, fs.R_OK | fs.W_OK, function(err) {
 					if (!err) {
-						copyFile(file['path'], dest_file, function(err) {
-							if (!err) {
-								success_cb(file);
-							}
+						fs.copy(file['path'], dest_file, {clobber:true, preserveTimestamps: true}, function (err) {
+							if (err) return console.error(err)
+							success_cb(file);
 						});
 					} else {
 						fs.mkdir(dest_path, function(err) {
 							if (!err) {
-								copyFile(file['path'], dest_file, function(err) {
-									if (!err) {
-										success_cb(file);
-									}
+								fs.copy(file['path'], dest_file, {clobber:true, preserveTimestamps: true}, function (err) {
+									if (err) return console.error(err)
+									success_cb(file);
 								});
 							}
 						});
@@ -99,30 +98,6 @@ var FileManager = function (data_home, on_img, on_movie, file_imported) {
 				});
 			}
 		});
-	}
-
-	function copyFile(source, target, cb) {
-		var cbCalled = false;
-
-		var rd = fs.createReadStream(source);
-		rd.on("error", function(err) {
-			done(err);
-		});
-		var wr = fs.createWriteStream(target);
-		wr.on("error", function(err) {
-			done(err);
-		});
-		wr.on("close", function(ex) {
-			done();
-		});
-		rd.pipe(wr);
-
-		function done(err) {
-			if (!cbCalled) {
-				cb(err);
-				cbCalled = true;
-			}
-		}
 	}
 }
 

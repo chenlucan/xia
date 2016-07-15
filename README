@@ -22,5 +22,11 @@ Todo:
  - db not exist, file exit in pantry home
  - avoid importing pantry home into itself
  - [fixed] new imported not shown on timeline correct place
- - new imported photos only shows one in timeline
- - file modification time is changed -  - asked questions on Stackoverflow
+ - [fixed] new imported photos only shows one in timeline
+ - [fixed] file modification time is changed -  - asked questions on Stackoverflow
+
+
+ ToRelease1.0
+  - [done] copy files preesrve timestamp
+  - internationalisation
+  - share with wechat
