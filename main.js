@@ -4,6 +4,7 @@ var fs     = require('fs');
 var fm     = require('./filemanager.js');
 var pantry_nedb = require('./pantry_nedb.js');
 
+
 // we use pantry as our data home
 console.log('app home: ', path.dirname(nw.App.dataPath));
 var data_home   = path.join(path.dirname(nw.App.dataPath), 'pantry');
