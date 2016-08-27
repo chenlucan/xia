@@ -11,6 +11,14 @@
 	<script src="js/modernizr.js"></script> <!-- Modernizr -->
   <script src="js/jquery-1.11.0.min.js"></script>
 
+	<script src="uidelegate.js"></script>
+	<script src="main.js"></script>
+	<script src="lightbox/js/lightbox.min.js"></script>
+	
+	<script>
+	window.nw_global = window.global;
+	window.global = undefined;
+	</script>
   <!-- 1. Load libraries -->
    <!-- Polyfill(s) for older browsers -->
   <script src="node_modules/core-js/client/shim.min.js"></script>
@@ -72,10 +80,5 @@
 			</div> <!-- cd-timeline-content -->
 		</div> <!-- cd-timeline-block -->
 	</template>
-
-
-<script src="uidelegate.js"></script>
-<script src="main.js"></script>
-<script src="lightbox/js/lightbox.min.js"></script>
 </body>
 </html>
