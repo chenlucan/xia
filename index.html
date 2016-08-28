@@ -25,6 +25,41 @@
 	</ul>
 
 	<section id="cd-timeline" class="cd-container">
+
+		<div ng-repeat="(date_id, records) in timeline ">
+			<div id="init-tl-block" class="cd-timeline-block">
+				<div class="cd-timeline-img cd-picture">
+					<img src="img/cd-icon-picture.svg" alt="Picture">
+				</div> <!-- cd-timeline-img -->
+				<div class="cd-timeline-content">
+					<div ng-if="$index < 4" ng-repeat="img in records">
+						<div class="tl_responsive">
+							<div class="tl_img">
+								<a target="_blank" href="file:///{{img['id_path']}}" data-lightbox="{{date_id}}">
+									<img ng-src="file:///{{img['id_path']}}" alt="{{img['name']}}" >
+								</a>
+								<!-- <div class="tl_desc"></div> -->
+							</div>
+						</div>
+					</div>
+					<div ng-if="$index >= 4" ng-repeat="img in records">
+						<div class="tl_responsive" style="display:None">
+							<div class="tl_img">
+								<a target="_blank" href="file:///{{img['id_path']}}" data-lightbox="date_id">
+									<img src="" alt="{{img['name']}}" >
+								</a>
+								<!-- <div class="tl_desc"></div> -->
+							</div>
+						</div>
+					</div>
+					<h2></h2>
+					<p></p>
+					<a href="" class="cd-read-more">Read more</a>
+					<span class="cd-date">{{date_id}}</span>
+				</div> <!-- cd-timeline-content -->
+			</div> <!-- cd-timeline-block -->
+		</div>
+
 		<!-- this node has to be present as insert referrence -->
 		<div id="init-tl-block" class="cd-timeline-block">
 			<div class="cd-timeline-img cd-picture">
