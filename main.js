@@ -13,13 +13,8 @@ xiaApp.config(['$compileProvider',
 	}]);
 
 xiaApp.controller('xiaCtrl', function($scope) {
-  $scope.firstName= "John";
-  $scope.lastName= "Doe";
-	$scope.names = ['atongmu', 'huluwa'];
 	$scope.timeline = {};
 	$scope.timelineKeys = [];
-
-
 
 	// we use pantry as our data home
 	console.log('app home: ', path.dirname(nw.App.dataPath));
