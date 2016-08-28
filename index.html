@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang="en" class="no-js" ng-app="xia">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,13 +10,19 @@
 	<link rel="stylesheet" href="lightbox/css/lightbox.min.css">
 	<script src="js/modernizr.js"></script> <!-- Modernizr -->
   <script src="js/jquery-1.11.0.min.js"></script>
+	<script src="node_modules/angular/angular.min.js"></script>
 	<title>Xia</title>
 </head>
-<body>
+<body ng-controller="xiaCtrl">
 	<header>
 		<div id="import-button">Move my photos in...</div>
 		<input id="folderSelector" type="file" nwdirectory/>
 	</header>
+
+	<h1>{{firstName}}</h1>
+	<ul ng-repeat="n in names">
+		<li ng-bind="n"></li>
+	</ul>
 
 	<section id="cd-timeline" class="cd-container">
 		<!-- this node has to be present as insert referrence -->

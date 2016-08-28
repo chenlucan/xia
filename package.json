@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/chenlucan/xia#readme",
   "dependencies": {
+    "angular": "^1.5.8",
     "fs-extra": "^0.30.0",
     "lightbox2": "^2.8.2",
     "nedb": "^1.8.0",

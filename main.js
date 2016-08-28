@@ -19,6 +19,19 @@ db.GetAll(OnDBRecords);
 var fileMgr = new fm.FileManager(data_home, function(){}, function(){}, FileImported);
 var uiDelegate = new UIDelegate();
 
+var xiaApp = angular.module('xia', []);
+xiaApp.config(['$compileProvider',
+	function($compileProvider) {
+	  $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
+	  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file:chrome-extension):/);
+	}]);
+
+xiaApp.controller('xiaCtrl', function($scope) {
+  $scope.firstName= "John";
+  $scope.lastName= "Doe";
+	$scope.names = ['atongmu', 'huluwa'];
+});
+
 jQuery(document).ready(function($) {
 	IniializeTimeline();
 	InitializeEvents();
