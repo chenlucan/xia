@@ -8,8 +8,8 @@ var pantry_nedb = require('./pantry_nedb.js');
 var xiaApp = angular.module('xia', []);
 xiaApp.config(['$compileProvider',
 	function($compileProvider) {
-	  $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
-	  $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file:chrome-extension):/);
+	  // $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
+	  // $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file:chrome-extension):/);
 	}]);
 
 xiaApp.controller('xiaCtrl', function($scope) {
