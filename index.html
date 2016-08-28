@@ -26,13 +26,13 @@
 
 	<section id="cd-timeline" class="cd-container">
 
-		<div ng-repeat="(date_id, records) in timeline ">
+		<div ng-repeat="date_id in timelineKeys">
 			<div id="init-tl-block" class="cd-timeline-block">
 				<div class="cd-timeline-img cd-picture">
 					<img src="img/cd-icon-picture.svg" alt="Picture">
 				</div> <!-- cd-timeline-img -->
 				<div class="cd-timeline-content">
-					<div ng-if="$index < 4" ng-repeat="img in records">
+					<div ng-if="$index < 4" ng-repeat="img in timeline[date_id]">
 						<div class="tl_responsive">
 							<div class="tl_img">
 								<a target="_blank" href="file:///{{img['id_path']}}" data-lightbox="{{date_id}}">
@@ -42,7 +42,7 @@
 							</div>
 						</div>
 					</div>
-					<div ng-if="$index >= 4" ng-repeat="img in records">
+					<div ng-if="$index >= 4" ng-repeat="img in timeline[date_id]">
 						<div class="tl_responsive" style="display:None">
 							<div class="tl_img">
 								<a target="_blank" href="file:///{{img['id_path']}}" data-lightbox="date_id">

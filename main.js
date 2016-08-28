@@ -17,6 +17,7 @@ xiaApp.controller('xiaCtrl', function($scope) {
   $scope.lastName= "Doe";
 	$scope.names = ['atongmu', 'huluwa'];
 	$scope.timeline = {};
+	$scope.timelineKeys = [];
 
 
 
@@ -124,6 +125,7 @@ xiaApp.controller('xiaCtrl', function($scope) {
 			} else {
 				$scope.timeline[date_id] = [record];
 			}
+			$scope.timelineKeys = Object.keys($scope.timeline).sort().reverse();
 			// timeline.append(record);
 		});
 		$scope.$applyAsync();
