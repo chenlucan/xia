@@ -4,6 +4,24 @@ var fs     = require('fs');
 var fm     = require('./filemanager.js');
 var pantry_nedb = require('./pantry_nedb.js');
 
+var i18n = require("i18n");
+
+i18n.configure({
+    locales:['en', 'cn'],
+    defaultLocale: 'en',
+    directory:'./locales'
+});
+
+var local = 'en';
+var lang = window.navigator.language;
+if (lang === 'zh-CN' || lang === 'zh-TW') {
+  local = 'cn';
+}
+i18n.setLocale(local);
+
+console.log("==================language===",window.navigator.language);
+var greeting = i18n.__('Hello');
+console.log("==============greeting==",greeting);
 
 var xiaApp = angular.module('xia', []);
 xiaApp.config(['$compileProvider',
@@ -13,6 +31,12 @@ xiaApp.config(['$compileProvider',
 	}]);
 
 xiaApp.controller('xiaCtrl', function($scope) {
+  $scope.appTitle          = i18n.__('app-slogan');
+  $scope.btnMore           = i18n.__('More');
+  $scope.btnMovePhotosIn   = i18n.__('Move my photos in...');
+  $scope.recordYourLife    = i18n.__('Record your life');
+  $scope.recordYourLifeDes = i18n.__('Record your life-description');
+  
 	$scope.timeline = {};
 	$scope.timelineKeys = [];
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="no-js" ng-app="xia">
+<html lang="en" class="no-js" ng-app="xia" ng-controller="xiaCtrl">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,11 +11,11 @@
 	<script src="js/modernizr.js"></script> <!-- Modernizr -->
   <script src="js/jquery-1.11.0.min.js"></script>
 	<script src="node_modules/angular/angular.min.js"></script>
-	<title>Xia</title>
+	<title ng-bind="appTitle"></title>
 </head>
-<body ng-controller="xiaCtrl">
+<body>
 	<header>
-		<div id="import-button">Move my photos in...</div>
+		<div id="import-button" ng-bind="btnMovePhotosIn"></div>
 		<input id="folderSelector" type="file" nwdirectory/>
 	</header>
 
@@ -49,7 +49,7 @@
 					</div>
 					<h2></h2>
 					<p></p>
-					<a href="" class="cd-read-more">Read more</a>
+					<a href="" class="cd-read-more" ng-bind="btnMore"></a>
 					<span class="cd-date">{{date_id}}</span>
 				</div> <!-- cd-timeline-content -->
 			</div> <!-- cd-timeline-block -->
@@ -61,9 +61,9 @@
 				<img src="img/cd-icon-picture.svg" alt="Picture">
 			</div> <!-- cd-timeline-img -->
 			<div class="cd-timeline-content">
-				<h2>Record your life</h2>
-				<p>Timeline organizes your data, make your life colorful. You data can be more fun and valuable.</p>
-				<a href="" class="cd-read-more">Read more</a>
+				<h2 ng-bind="recordYourLife"></h2>
+				<p ng-bind="recordYourLifeDes"></p>
+				<a href="" class="cd-read-more" ng-bind="btnMore"></a>
 				<span class="cd-date"></span>
 			</div> <!-- cd-timeline-content -->
 		</div> <!-- cd-timeline-block -->
