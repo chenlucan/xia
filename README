@@ -28,6 +28,8 @@ Todo:
 
  ToRelease1.0
   - [done] copy files preesrve timestamp
-  - angular 1 - lightbox not show, style not good, timeline not in order
-  - internationalisation
-  - share with wechat
+  - [fixed] angular 1 - lightbox not show, style not good, timeline not in order
+  - [done]internationalisation
+  - able to comment/descriptions
+  - login with wechat/facebook
+  - [not possible] share with wechat

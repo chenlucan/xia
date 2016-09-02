@@ -36,7 +36,7 @@ xiaApp.controller('xiaCtrl', function($scope) {
   $scope.btnMovePhotosIn   = i18n.__('Move my photos in...');
   $scope.recordYourLife    = i18n.__('Record your life');
   $scope.recordYourLifeDes = i18n.__('Record your life-description');
-  
+
 	$scope.timeline = {};
 	$scope.timelineKeys = [];
 
@@ -138,7 +138,7 @@ xiaApp.controller('xiaCtrl', function($scope) {
 			var y = bdate.getFullYear() + '';
 			var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1); // storting from 0==Jan
 			var d = (bdate.getDate()  <= 9 ? '0' : '')+(bdate.getDate()); //starting from 1
-			var date_id = y + '年' + m + '月' + d + '日';
+			var date_id = y + '/' + m + '/' + d;
 			if (date_id in $scope.timeline) {
 				$scope.timeline[date_id].push(record);
 			} else {
