@@ -24,6 +24,7 @@ var Pantry = function (db_home) {
 	this.GetAll    = GetAll;
 	this.GetByDate = GetByDate;
 	this.GetByType = GetByType;
+	this.GetByOneDay = GetByOneDay;
 
 	SetUpIndex();
 
@@ -45,7 +46,16 @@ var Pantry = function (db_home) {
 	}
 
 	function GetByDate(iso_date, on_file_records) {
-		db.find({ birth_time: iso_date }).sort({ birth_time: -1 }).exec(function (err, docs) {
+		db_.find({ birth_time: iso_date }).sort({ birth_time: -1 }).exec(function (err, docs) {
+			if (!err) {
+				on_file_records(docs);
+			}
+		});
+	}
+
+	function GetByOneDay(iso_day, on_file_records) {
+		console.log('==========get by one day=', iso_day);
+		db_.find({ birth_time: { $regex: /2016/ } }).sort({ birth_time: -1 }).exec(function (err, docs) {
 			if (!err) {
 				on_file_records(docs);
 			}
@@ -53,7 +63,7 @@ var Pantry = function (db_home) {
 	}
 
 	function GetByType(type_name, on_file_records) {
-		db.find({ type: type_name }).sort({ birth_time: -1 }).exec(function (err, docs) {
+		db_.find({ type: type_name }).sort({ birth_time: -1 }).exec(function (err, docs) {
 			if (!err) {
 				on_file_records(docs);
 			}

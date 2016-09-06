@@ -26,21 +26,39 @@ xiaApp.controller('xiaCtrl', function($scope) {
 	InitializeInstallation();
 
 	var db = new pantry_nedb.Pantry(db_home);
+	$scope.db = db;
 	db.GetAll(OnDBRecords);
+	console.log('===========db is: ===',db);
 
 	var fileMgr = new fm.FileManager(data_home, function(){}, function(){}, FileImported);
 	var uiDelegate = new UIDelegate();
 
+	$scope.Popup = Popup;
 
+	function Popup(btime) {
+		console.log('================birth_time', btime);
+		var qdate = new Date(btime);
+		var iso_date = qdate.toISOString();
+		console.log('================qdate=', qdate);
+		console.log('================iso_date=', iso_date);
+
+		$scope.db.GetByOneDay(iso_date.substring(10), function(records) {
+			console.log('found=====records===',records);
+		})
+	}
 
 	jQuery(document).ready(function($) {
 		IniializeTimeline();
 		InitializeEvents();
+		// InitializeMagnificPopup();
+		InitaDynamicPopup();
 
 		function InitializeEvents() {
 			var button = document.querySelector('#import-button');
 			button.addEventListener('click', function () {
-				selectFolderDialog();
+				// selectFolderDialog();
+				// InitializeMagnificPopup();
+				InitaDynamicPopup();
 			});
 		}
 
@@ -82,6 +100,91 @@ xiaApp.controller('xiaCtrl', function($scope) {
 				});
 			}
 		}
+
+		function InitaDynamicPopup() {
+			console.log('=====================InitaDynamicPopup');
+			// db.GetByDate();
+			$('#open-popup').magnificPopup({
+			    items: [
+			      {
+			        src: 'http://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Peter_%26_Paul_fortress_in_SPB_03.jpg/800px-Peter_%26_Paul_fortress_in_SPB_03.jpg',
+			        title: 'Peter & Paul fortress in SPB'
+			      },
+			      {
+			        src: 'http://vimeo.com/123123',
+			        type: 'iframe' // this overrides default type
+			      },
+			      {
+			        src: $('<div class="white-popup">Dynamically created element</div>'), // Dynamically created element
+			        type: 'inline'
+			      },
+			      {
+			        src: '<div class="white-popup">Popup from HTML string</div>', // HTML string
+			        type: 'inline'
+			      },
+			      {
+			        src: '#my-popup', // CSS selector of an element on page that should be used as a popup
+			        type: 'inline'
+			      }
+			    ],
+			    gallery: {
+			      enabled: true
+			    },
+			    type: 'image' // this is a default type
+			});
+		}
+		function InitializeMagnificPopup() {
+			console.log('=================InitializeMagnificPopup();');
+			$('.with-caption').magnificPopup({
+					type: 'image',
+					closeBtnInside: false,
+					mainClass: 'mfp-with-zoom mfp-img-mobile',
+
+					image: {
+						verticalFit: true,
+						titleSrc: function(item) {
+
+			        var caption = item.el.attr('title');
+
+			        var pinItURL = "http://pinterest.com/pin/create/button/";
+
+			        // Refer to http://developers.pinterest.com/pin_it/
+			        pinItURL += '?url=' + 'http://dimsemenov.com/plugins/magnific-popup/';
+			        pinItURL += '&media=' + item.el.attr('href');
+			        pinItURL += '&description=' + caption;
+
+
+			        return caption + ' &middot; <a class="pin-it" href="'+pinItURL+'" target="_blank"><img src="http://assets.pinterest.com/images/pidgets/pin_it_button.png" /></a>';
+						}
+					},
+
+
+			    gallery: {
+			      enabled: true
+			    },
+
+
+
+			    callbacks: {
+			      open: function() {
+			        this.wrap.on('click.pinhandler', '.pin-it', function(e) {
+
+			          // This part of code doesn't work on CodePen, as it blocks window.open
+			          // Uncomment it on your production site, it opens a window via JavaScript, instead of new page
+			          /*window.open(e.currentTarget.href, "intent", "scrollbars=yes,resizable=yes,toolbar=no,location=yes,width=550,height=420,left=" + (window.screen ? Math.round(screen.width / 2 - 275) : 50) + ",top=" + 100);
+
+
+			          return false;*/
+			        });
+			      },
+			      beforeClose: function() {
+			       //this.wrap.off('click.pinhandler');
+			      }
+			    }
+
+				});
+
+		}
 	});
 
 
@@ -114,7 +217,7 @@ xiaApp.controller('xiaCtrl', function($scope) {
 			var y = bdate.getFullYear() + '';
 			var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1); // storting from 0==Jan
 			var d = (bdate.getDate()  <= 9 ? '0' : '')+(bdate.getDate()); //starting from 1
-			var date_id = y + '年' + m + '月' + d + '日';
+			var date_id = y + '/' + m + '/' + d;
 			if (date_id in $scope.timeline) {
 				$scope.timeline[date_id].push(record);
 			} else {
