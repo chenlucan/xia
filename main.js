@@ -42,24 +42,48 @@ xiaApp.controller('xiaCtrl', function($scope) {
 		console.log('================qdate=', qdate);
 		console.log('================iso_date=', iso_date);
 
-		$scope.db.GetByOneDay(iso_date.substring(10), function(records) {
-			console.log('found=====records===',records);
+		$scope.db.GetAll(function (records) {
+			console.log('------------------------',records.length);
+			var item_list = [];
+			for (var r in records) {
+				console.log('-------------looping-',r);
+				item_list.push(
+					{
+						src : 'file:///'+records[r]['id_path'],
+						title:'first'
+					}
+				);
+			}
+
+			$.magnificPopup.open({
+					items: item_list,
+			    gallery: {
+			      enabled: true
+			    },
+			    type: 'image' // this is a default type
+			});
 		})
+		// $scope.db.GetByOneDay(iso_date.substring(10), function(records) {
+		// 	console.log('found=====records===',records);
+		// })
 	}
 
 	jQuery(document).ready(function($) {
 		IniializeTimeline();
 		InitializeEvents();
 		// InitializeMagnificPopup();
-		InitaDynamicPopup();
+		// InitaDynamicPopup();
+		$('#open-popup').magnificPopup({});
 
 		function InitializeEvents() {
 			var button = document.querySelector('#import-button');
 			button.addEventListener('click', function () {
 				// selectFolderDialog();
 				// InitializeMagnificPopup();
-				InitaDynamicPopup();
+				console.log('==========================intialized events');
+				// InitaDynamicPopup();
 			});
+			console.log('==========================intialized events');
 		}
 
 		function selectFolderDialog() {
