@@ -8,9 +8,27 @@
 	<link rel="stylesheet" href="css/style.css"> <!-- Resource style -->
   <link rel="stylesheet" href="css/timeline_image.css"> <!-- Resource style -->
 	<link rel="stylesheet" href="lightbox/css/lightbox.min.css">
+	<link rel="stylesheet" href="css/magnific-popup.css">
+	<style>
+		.image-link {
+		  cursor: -webkit-zoom-in;
+		  cursor: -moz-zoom-in;
+		  cursor: zoom-in;
+		}
+
+		/* aligns caption to center */
+		.mfp-title {
+		  text-align: center;
+		  padding: 6px 0;
+		}
+	</style>
+
 	<script src="js/modernizr.js"></script> <!-- Modernizr -->
   <script src="js/jquery-1.11.0.min.js"></script>
 	<script src="node_modules/angular/angular.min.js"></script>
+
+	<script src="js/jquery.magnific-popup.min.js"></script>
+
 	<title ng-bind="appTitle"></title>
 </head>
 <body>
@@ -18,6 +36,29 @@
 		<div id="import-button" ng-bind="btnMovePhotosIn"></div>
 		<input id="folderSelector" type="file" nwdirectory/>
 	</header>
+
+
+
+	<style>
+	#open-popup {padding:20px}
+	.white-popup {
+	  position: relative;
+	  background: #FFF;
+	  padding: 40px;
+	  width: auto;
+	  max-width: 200px;
+	  margin: 20px auto;
+	  text-align: center;
+	}
+	</style>
+	<button id="open-popup">Open popup</button>
+
+	<div id="my-popup" class="mfp-hide white-popup">
+	  Inline popup
+	</div>
+
+
+
 
 	<section id="cd-timeline" class="cd-container">
 
@@ -30,7 +71,7 @@
 					<div ng-if="$index < 4" ng-repeat="img in timeline[date_id]">
 						<div class="tl_responsive">
 							<div class="tl_img">
-								<a target="_blank" href="file:///{{img['id_path']}}" data-lightbox="{{date_id}}">
+								<a target="_blank" href="file:///{{img['id_path']}}" class="with-caption image-link">
 									<img ng-src="file:///{{img['id_path']}}" alt="{{img['name']}}" >
 								</a>
 								<!-- <div class="tl_desc"></div> -->
@@ -40,7 +81,7 @@
 					<div ng-if="$index >= 4" ng-repeat="img in timeline[date_id]">
 						<div class="tl_responsive" style="display:None">
 							<div class="tl_img">
-								<a target="_blank" href="file:///{{img['id_path']}}" data-lightbox="{{date_id}}">
+								<a target="_blank" href="file:///{{img['id_path']}}" >
 									<img src="" alt="{{img['name']}}" >
 								</a>
 								<!-- <div class="tl_desc"></div> -->
@@ -49,7 +90,7 @@
 					</div>
 					<h2></h2>
 					<p></p>
-					<a href="" class="cd-read-more" ng-bind="btnMore"></a>
+					<a href="" ng-click="Popup(date_id)" class="cd-read-more" ng-bind="btnMore"></a>
 					<span class="cd-date">{{date_id}}</span>
 				</div> <!-- cd-timeline-content -->
 			</div> <!-- cd-timeline-block -->
@@ -69,6 +110,10 @@
 		</div> <!-- cd-timeline-block -->
 	</section> <!-- cd-timeline -->
 
+
+
+
+<!-- template not supposed to be used after moving timeline from uidelegate to angular -->
 	<template id='img-placeholder-template'>
 		<div class="tl_responsive">
 			<div class="tl_img">
