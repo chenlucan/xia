@@ -30,6 +30,12 @@ Todo:
   - [done] copy files preesrve timestamp
   - [fixed] angular 1 - lightbox not show, style not good, timeline not in order
   - [done]internationalisation
+  - slide show
+  - GIF/video
   - able to comment/descriptions
   - login with wechat/facebook
   - [not possible] share with wechat
+
+  Future release
+   - calendar
+   - maps
