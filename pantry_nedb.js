@@ -54,8 +54,9 @@ var Pantry = function (db_home) {
 	}
 
 	function GetByOneDay(iso_day, on_file_records) {
-		console.log('==========get by one day=', iso_day);
-		db_.find({ birth_time: { $regex: /2016/ } }).sort({ birth_time: -1 }).exec(function (err, docs) {
+		var re_iso_day = new RegExp(iso_day);
+
+		db_.find({ birth_time: { $regex: re_iso_day } }).sort({ birth_time: -1 }).exec(function (err, docs) {
 			if (!err) {
 				on_file_records(docs);
 			}

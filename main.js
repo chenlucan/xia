@@ -36,17 +36,13 @@ xiaApp.controller('xiaCtrl', function($scope) {
 	$scope.Popup = Popup;
 
 	function Popup(btime) {
-		console.log('================birth_time', btime);
-		var qdate = new Date(btime);
-		var iso_date = qdate.toISOString();
-		console.log('================qdate=', qdate);
-		console.log('================iso_date=', iso_date);
+		// (todo) - btime is from ui, it's supposed local timezone, we used it as iso-date
+		var iso_btime = btime.replace(/\//g, '-');
 
-		$scope.db.GetAll(function (records) {
+		$scope.db.GetByOneDay(iso_btime, function(records) {
 			console.log('------------------------',records.length);
 			var item_list = [];
 			for (var r in records) {
-				console.log('-------------looping-',r);
 				item_list.push(
 					{
 						src : 'file:///'+records[r]['id_path'],
@@ -54,18 +50,16 @@ xiaApp.controller('xiaCtrl', function($scope) {
 					}
 				);
 			}
-
-			$.magnificPopup.open({
-					items: item_list,
-			    gallery: {
-			      enabled: true
-			    },
-			    type: 'image' // this is a default type
-			});
-		})
-		// $scope.db.GetByOneDay(iso_date.substring(10), function(records) {
-		// 	console.log('found=====records===',records);
-		// })
+			if (item_list.length > 0) {
+				$.magnificPopup.open({
+						items: item_list,
+				    gallery: {
+				      enabled: true
+				    },
+				    type: 'image' // this is a default type
+				});
+			}
+		});
 	}
 
 	jQuery(document).ready(function($) {
@@ -236,12 +230,14 @@ xiaApp.controller('xiaCtrl', function($scope) {
 	function OnRecords(records) {
 		records.forEach(function(record, index, arr) {
 			// uiDelegate.Update(record);
-
+			console.log('====================================',record['birth_time']);
 			var bdate = new Date(record['birth_time']);
 			var y = bdate.getFullYear() + '';
 			var m = (bdate.getMonth() < 9 ? '0' : '')+(bdate.getMonth()+1); // storting from 0==Jan
 			var d = (bdate.getDate()  <= 9 ? '0' : '')+(bdate.getDate()); //starting from 1
 			var date_id = y + '/' + m + '/' + d;
+			// new Date('2016/07/08') use local timezone
+			// new Date('2016-07-08') is ISO date
 			if (date_id in $scope.timeline) {
 				$scope.timeline[date_id].push(record);
 			} else {
