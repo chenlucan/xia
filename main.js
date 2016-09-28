@@ -60,55 +60,24 @@ xiaApp.controller('xiaCtrl', function($scope) {
 		var iso_btime = btime.replace(/\//g, '-');
 
 		$scope.db.GetByOneDay(iso_btime, function(records) {
-			var init_items = [];
-      var counter = 0;
+			let init_items = [];
 			for (var r in records) {
-        counter++;
-        var template_photo = document.body.querySelector('#photo_with_comments');
-        var img_div      = template_photo.content.querySelector('img');
-        var comments_div = template_photo.content.querySelector('#comments');
-
+        let template_photo = document.body.querySelector('#photo_with_comments');
+        let img_div      = template_photo.content.querySelector('img');
+        let comments_div = template_photo.content.querySelector('#comments');
         img_div.src='file:///'+records[r]['id_path'];
-        comments_div.textContent="公元之行"+counter;
+        comments_div.textContent="公元之行";
+        let content_div = document.importNode(template_photo.content, true);
+        let test_body = document.body.querySelector('header');
         init_items.push(
 					{
-						src : document.importNode(template_photo.content, true),
+						src : content_div.children[0],
 						type:'inline'
 					}
 				);
-				// init_items.push(
-				// 	{
-				// 		src : 'file:///'+records[r]['id_path'],
-				// 		title:'first'
-				// 	}
-				// );
 			}
 
-	    var extra_items = [
-	      {
-	        src: 'http://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Peter_%26_Paul_fortress_in_SPB_03.jpg/800px-Peter_%26_Paul_fortress_in_SPB_03.jpg',
-	        title: 'Peter & Paul fortress in SPB'
-	      },
-	      {
-	        src: 'http://vimeo.com/123123',
-	        type: 'iframe' // this overrides default type
-	      },
-	      {
-	        src: $('<div class="white-popup">Dynamically created element</div>'), // Dynamically created element
-	        type: 'inline'
-	      },
-	      {
-	        src: '<div class="white-popup">Popup from HTML string</div>', // HTML string
-	        type: 'inline'
-	      },
-	      {
-	        src: '#my-popup', // CSS selector of an element on page that should be used as a popup
-	        type: 'inline'
-	      }
-	    ];
-
-      var all_items = init_items.concat(extra_items);
-
+      let all_items = init_items;
 
 			if (all_items.length > 0) {
 				$.magnificPopup.open({
