@@ -60,22 +60,80 @@ xiaApp.controller('xiaCtrl', function($scope) {
 		var iso_btime = btime.replace(/\//g, '-');
 
 		$scope.db.GetByOneDay(iso_btime, function(records) {
-			var item_list = [];
+			var init_items = [];
+      var counter = 0;
 			for (var r in records) {
-				item_list.push(
+        counter++;
+        var template_photo = document.body.querySelector('#photo_with_comments');
+        var img_div      = template_photo.content.querySelector('img');
+        var comments_div = template_photo.content.querySelector('#comments');
+
+        img_div.src='file:///'+records[r]['id_path'];
+        comments_div.textContent="公元之行"+counter;
+        init_items.push(
 					{
-						src : 'file:///'+records[r]['id_path'],
-						title:'first'
+						src : document.importNode(template_photo.content, true),
+						type:'inline'
 					}
 				);
+				// init_items.push(
+				// 	{
+				// 		src : 'file:///'+records[r]['id_path'],
+				// 		title:'first'
+				// 	}
+				// );
 			}
-			if (item_list.length > 0) {
+
+	    var extra_items = [
+	      {
+	        src: 'http://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Peter_%26_Paul_fortress_in_SPB_03.jpg/800px-Peter_%26_Paul_fortress_in_SPB_03.jpg',
+	        title: 'Peter & Paul fortress in SPB'
+	      },
+	      {
+	        src: 'http://vimeo.com/123123',
+	        type: 'iframe' // this overrides default type
+	      },
+	      {
+	        src: $('<div class="white-popup">Dynamically created element</div>'), // Dynamically created element
+	        type: 'inline'
+	      },
+	      {
+	        src: '<div class="white-popup">Popup from HTML string</div>', // HTML string
+	        type: 'inline'
+	      },
+	      {
+	        src: '#my-popup', // CSS selector of an element on page that should be used as a popup
+	        type: 'inline'
+	      }
+	    ];
+
+      var all_items = init_items.concat(extra_items);
+
+
+			if (all_items.length > 0) {
 				$.magnificPopup.open({
-						items: item_list,
+						items: all_items,
 				    gallery: {
 				      enabled: true
 				    },
-				    type: 'image' // this is a default type
+				    type: 'image', // this is a default type
+
+                // mainClass: 'mfp-with-zoom', // this class is for CSS animation below
+                // zoom: {
+                //   enabled: true, // By default it's false, so don't forget to enable it
+                //
+                //   duration: 300, // duration of the effect, in milliseconds
+                //   easing: 'ease-in-out', // CSS transition easing function
+                //
+                //   // The "opener" function should return the element from which popup will be zoomed in
+                //   // and to which popup will be scaled down
+                //   // By defailt it looks for an image tag:
+                //   opener: function(openerElement) {
+                //     // openerElement is the element on which popup was initialized, in this case its <a> tag
+                //     // you don't need to add "opener" option if this code matches your needs, it's defailt one.
+                //     return openerElement.is('img') ? openerElement : openerElement.find('img');
+                //   }
+                // }
 				});
 			}
 		});

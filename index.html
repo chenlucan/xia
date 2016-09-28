@@ -9,13 +9,14 @@
   <link rel="stylesheet" href="css/timeline_image.css"> <!-- Resource style -->
 	<link rel="stylesheet" href="lightbox/css/lightbox.min.css">
 	<link rel="stylesheet" href="css/magnific-popup.css">
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
 
 	<script src="js/modernizr.js"></script> <!-- Modernizr -->
   <script src="js/jquery-1.11.0.min.js"></script>
 	<script src="node_modules/angular/angular.min.js"></script>
 
 	<script src="js/jquery.magnific-popup.min.js"></script>
-
+  <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 	<title ng-bind="appTitle"></title>
 </head>
 <body>
@@ -93,6 +94,19 @@
 			</div> <!-- cd-timeline-content -->
 		</div> <!-- cd-timeline-block -->
 	</template>
+
+	<template id='photo_with_comments'>
+		<div class="row">
+		  <div class="col-xs-12 col-sm-6 col-md-8">
+				<img></img>
+			</div>
+		  <div id="comments" class="col-xs-6 col-md-4">
+
+			</div>
+		</div>
+	</template>
+
+
 
 
 <script src="uidelegate.js"></script>
