@@ -37,6 +37,7 @@ xiaApp.controller('xiaCtrl', function($scope) {
 
 	$scope.timeline = {};
 	$scope.timelineKeys = [];
+  $scope.comments = {};
 
 	// we use pantry as our data home
 	console.log('app home: ', path.dirname(nw.App.dataPath));
@@ -60,13 +61,23 @@ xiaApp.controller('xiaCtrl', function($scope) {
 		var iso_btime = btime.replace(/\//g, '-');
 
 		$scope.db.GetByOneDay(iso_btime, function(records) {
+
 			let init_items = [];
 			for (var r in records) {
+        let id_path = records[r]['id_path']
+        $scope.db.GetComments(id_path, function(comments) {
+          if (!(id_path in $scope.comments)) {
+            $scope.comments[id_path] = [];
+          }
+          comments.forEach(function(ele, index, array) {
+            $scope.comments[id_path].push(ele['comment']);
+          });
+        });
+
         let template_photo = document.body.querySelector('#photo_with_comments');
         let img_div      = template_photo.content.querySelector('img');
         let comments_div = template_photo.content.querySelector('#comments');
-        img_div.src='file:///'+records[r]['id_path'];
-        comments_div.textContent="公元之行";
+        img_div.src='file:///'+id_path;
         let content_div = document.importNode(template_photo.content, true);
         let test_body = document.body.querySelector('header');
         init_items.push(

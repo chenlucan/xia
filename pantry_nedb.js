@@ -25,6 +25,7 @@ var Pantry = function (db_home) {
 	this.GetByDate = GetByDate;
 	this.GetByType = GetByType;
 	this.GetByOneDay = GetByOneDay;
+	this.GetComments = GetComments;
 
 	SetUpIndex();
 
@@ -69,6 +70,21 @@ var Pantry = function (db_home) {
 				on_file_records(docs);
 			}
 		});
+	}
+
+	function GetComments(idpath, on_comments) {
+		db_.find({id_path:idpath}).sort({creation_time: 1}).exec(function (err, docs) {
+			if (!err) {
+				on_comments(docs);
+			}
+		});
+	}
+
+	function SaveComments(comment) {
+		/*
+			id_path, comment, creation_time
+		*/
+		db_.insert(comment, function(err, doc) {});
 	}
 
 	function SetUpIndex() {
