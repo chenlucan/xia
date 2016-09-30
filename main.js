@@ -28,7 +28,7 @@ xiaApp.config(['$compileProvider',
 	  // $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file:chrome-extension):/);
 	}]);
 
-xiaApp.controller('xiaCtrl', function($scope) {
+xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
   $scope.appTitle          = i18n.__('app-slogan');
   $scope.btnMore           = i18n.__('More');
   $scope.btnMovePhotosIn   = i18n.__('Move my photos in...');
@@ -38,6 +38,10 @@ xiaApp.controller('xiaCtrl', function($scope) {
 	$scope.timeline = {};
 	$scope.timelineKeys = [];
   $scope.comments = {};
+
+  $scope.current_id_path = '';
+  $scope.current_comment = '';
+  $scope.newPost = newPost;
 
 	// we use pantry as our data home
 	console.log('app home: ', path.dirname(nw.App.dataPath));
@@ -62,47 +66,56 @@ xiaApp.controller('xiaCtrl', function($scope) {
 
 		$scope.db.GetByOneDay(iso_btime, function(records) {
 			let init_items = [];
-      console.log('==============returned records===',records);
+      // console.log('==============returned records===',records);
 			for (var r in records) {
         let id_path = records[r]['id_path']
         $scope.db.GetComments(id_path, function(comments) {
+          console.log('==============GetComments=',comments);
           if (!(id_path in $scope.comments)) {
             $scope.comments[id_path] = [];
           }
           comments.forEach(function(ele, index, array) {
             $scope.comments[id_path].push(ele['comment']);
           });
+
+
+          $scope.comments[id_path].forEach(function(ele, index, array) {
+            let comDiv = document.createElement("div");
+            comDiv.innerHTML = ele['comment'];
+            past_post_div.appendChild(comDiv);
+          });
         });
 
-        $scope.comments[id_path] = [
-          {
-            'id_path':id_path,
-            'comment':'==========='
-          },
-          {
-            'id_path':id_path,
-            'comment':'goooooooooooooooo'
-          },
-          {
-            'id_path':id_path,
-            'comment':'A nice journey'
-          },
-        ];
+        // $scope.comments[id_path] = [
+        //   {
+        //     'id_path':id_path,
+        //     'comment':'==========='
+        //   },
+        //   {
+        //     'id_path':id_path,
+        //     'comment':'goooooooooooooooo'
+        //   },
+        //   {
+        //     'id_path':id_path,
+        //     'comment':'A nice journey'
+        //   },
+        // ];
 
         let template_photo = document.body.querySelector('#photo_with_comments');
         let img_div      = template_photo.content.querySelector('img');
+        let hidden_div      = template_photo.content.querySelector('.id-path');
         let comments_div = template_photo.content.querySelector('.comments');
-        while (comments_div.firstChild) {
-            comments_div.removeChild(comments_div.firstChild);
+        let past_post_div = comments_div.childNodes[1];
+        console.log('=================past_post_div=',past_post_div);
+        while (past_post_div.firstChild) {
+          past_post_div.removeChild(past_post_div.firstChild);
         }
-        $scope.comments[id_path].forEach(function(ele, index, array) {
-          console.log();
-          let comDiv = document.createElement("div");
-          comDiv.innerHTML = ele['comment'];
-          comments_div.insertBefore(comDiv, comments_div.childNodes[0]);
-        });
+        console.log('============id_path:',id_path);
         img_div.src='file:///'+id_path;
+        hidden_div.innerHTML=id_path
         let content_div = document.importNode(template_photo.content, true);
+
+        $compile(content_div.children[0])($scope);
         init_items.push(
 					{
 						src : content_div.children[0],
@@ -121,22 +134,27 @@ xiaApp.controller('xiaCtrl', function($scope) {
 				    },
 				    type: 'image', // this is a default type
 
-                // mainClass: 'mfp-with-zoom', // this class is for CSS animation below
-                // zoom: {
-                //   enabled: true, // By default it's false, so don't forget to enable it
-                //
-                //   duration: 300, // duration of the effect, in milliseconds
-                //   easing: 'ease-in-out', // CSS transition easing function
-                //
-                //   // The "opener" function should return the element from which popup will be zoomed in
-                //   // and to which popup will be scaled down
-                //   // By defailt it looks for an image tag:
-                //   opener: function(openerElement) {
-                //     // openerElement is the element on which popup was initialized, in this case its <a> tag
-                //     // you don't need to add "opener" option if this code matches your needs, it's defailt one.
-                //     return openerElement.is('img') ? openerElement : openerElement.find('img');
-                //   }
-                // }
+            callbacks : {
+              change: function() {
+                 console.log('================this.index=',this.index,'===this=',this);
+
+                //  let comDiv = document.createElement("div");
+                //  comDiv.innerHTML = '================';
+                //  this.content[0].children[2].children[0].appendChild(comDiv);
+
+                 $scope.current_id_path = this.content[0].querySelector('.id-path').innerHTML;
+                 console.log('==================current_id_path==',$scope.current_id_path);
+              },
+              open : function() {
+                var mp = $.magnificPopup.instance;
+                // t = $(mp.currItem.el[0]);
+                console.log('=========opened=',mp.currItem,'===',this.st.el);
+                // console.log( t.data('custom') );
+              },
+              elementParse: function(item) {
+                console.log('===========element:',item)
+              }
+            }
 				});
 			}
 		});
@@ -283,4 +301,15 @@ xiaApp.controller('xiaCtrl', function($scope) {
 			});
 		}
 	}
-});
+
+  function newPost() {
+    let new_post = {
+      'id_path': $scope.current_id_path,
+      'comment': $scope.current_comment,
+      'creation_time': new Date()
+    }
+
+    console.log('============new_post=',new_post);
+    $scope.db.SaveComments(new_post);
+  }
+}]);
