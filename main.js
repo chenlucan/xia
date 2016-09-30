@@ -61,8 +61,8 @@ xiaApp.controller('xiaCtrl', function($scope) {
 		var iso_btime = btime.replace(/\//g, '-');
 
 		$scope.db.GetByOneDay(iso_btime, function(records) {
-
 			let init_items = [];
+      console.log('==============returned records===',records);
 			for (var r in records) {
         let id_path = records[r]['id_path']
         $scope.db.GetComments(id_path, function(comments) {
@@ -74,12 +74,35 @@ xiaApp.controller('xiaCtrl', function($scope) {
           });
         });
 
+        $scope.comments[id_path] = [
+          {
+            'id_path':id_path,
+            'comment':'==========='
+          },
+          {
+            'id_path':id_path,
+            'comment':'goooooooooooooooo'
+          },
+          {
+            'id_path':id_path,
+            'comment':'A nice journey'
+          },
+        ];
+
         let template_photo = document.body.querySelector('#photo_with_comments');
         let img_div      = template_photo.content.querySelector('img');
-        let comments_div = template_photo.content.querySelector('#comments');
+        let comments_div = template_photo.content.querySelector('.comments');
+        while (comments_div.firstChild) {
+            comments_div.removeChild(comments_div.firstChild);
+        }
+        $scope.comments[id_path].forEach(function(ele, index, array) {
+          console.log();
+          let comDiv = document.createElement("div");
+          comDiv.innerHTML = ele['comment'];
+          comments_div.insertBefore(comDiv, comments_div.childNodes[0]);
+        });
         img_div.src='file:///'+id_path;
         let content_div = document.importNode(template_photo.content, true);
-        let test_body = document.body.querySelector('header');
         init_items.push(
 					{
 						src : content_div.children[0],
