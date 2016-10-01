@@ -67,7 +67,6 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
 
 		$scope.db.GetByOneDay(iso_btime, function(records) {
 			let init_items = [];
-      console.log('============records length==',records.length);
       $scope.popupNodes = []
 			for (var r in records) {
         let id_path = records[r]['id_path'];
@@ -77,6 +76,24 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
             'comments':[]
           }
         );
+
+        $scope.db.GetComments(id_path, function(comments) {
+          var result = $.grep($scope.popupNodes, function(e){ return e.id_path === id_path; });
+          if (result.length === 1) {
+            result.comments = ['aaaaa','bbbb'];
+          }
+
+          for (var i in $scope.popupNodes) {
+            if ($scope.popupNodes[i].id_path === id_path) {
+               $scope.popupNodes[i].comments = ['ccc','ddd'];
+               break; //Stop this loop, we found it!
+            }
+          }
+          console.log('=============found comments=',result.comments);
+          console.log('============$scope.popupNodes==',$scope.popupNodes);
+          $scope.$apply();
+        });
+
                                                           // let id_path = records[r]['id_path']
                                                           // $scope.db.GetComments(id_path, function(comments) {
                                                           //   console.log('==============GetComments=',comments);
@@ -117,12 +134,11 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
                                                   				// 	}
                                                   				// );
 			}
-      console.log("==================popupNodes length=",$scope.popupNodes);
+
       $scope.$apply();
       let all_items = init_items;
       let popupNodeList = document.body.querySelector(".popup-node-list");
-      console.log("=============popupNodeList=",popupNodeList.children.length);
-      var children = Array.from(popupNodeList.children);
+      let children = Array.from(popupNodeList.children);
       children.forEach(function(ele, index, array) {
         all_items.push(
           {
@@ -131,8 +147,6 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
           }
         );
       });
-
-      // console.log("=============popupNodeList len=",popupNodeList.length);
 
 			if (all_items.length > 0) {
 				$.magnificPopup.open({
