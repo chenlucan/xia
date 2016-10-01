@@ -87,8 +87,8 @@ var Pantry = function (db_home) {
 		/*
 			id_path, comment, creation_time
 		*/
-		console.log('================SaveComments=',comment);
-		db_comments.insert(comment, function(err, doc) {});
+		db_comments.insert(comment, function(err, doc) {
+		});
 	}
 
 	function SetUpIndex() {

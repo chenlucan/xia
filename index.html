@@ -78,8 +78,9 @@
 						<div ng-bind="comm"></div>
 					</div>
 					<div class="col-md-12">
-						<input  ng-bind="current_comment" class="form-control" type="text">
-						<button type="button" ng-click="newPost(node.id_path)" class="btn btn-primary btn-sm">Post</button>
+						<input ng-model="newPost.comment" class="form-control" type="text">
+						<div>text = {{newPost.comment}}</div>
+						<button type="button" ng-click="postComment(node.id_path)" class="btn btn-primary btn-sm">Post</button>
 					</div>
 				</div>
 				<div class="col-md-1"></div>
@@ -127,7 +128,7 @@
 		  <div class="col-md-3 bg-success comments">
 				<div class="col-md-12 comments-list"></div>
 				<div class="col-md-12">
-				  <input  ng-bind="current_comment" class="form-control" type="text">
+				  <input  class="form-control" type="text">
 					<button type="button" ng-click="newPost()" class="btn btn-primary btn-sm">Post</button>
 				</div>
 			</div>
