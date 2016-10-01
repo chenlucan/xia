@@ -42,6 +42,7 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
   $scope.current_id_path = '';
   $scope.current_comment = '';
   $scope.newPost = newPost;
+  $scope.popupNodes = [];
 
 	// we use pantry as our data home
 	console.log('app home: ', path.dirname(nw.App.dataPath));
@@ -66,65 +67,72 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
 
 		$scope.db.GetByOneDay(iso_btime, function(records) {
 			let init_items = [];
-      // console.log('==============returned records===',records);
+      console.log('============records length==',records.length);
+      $scope.popupNodes = []
 			for (var r in records) {
-        let id_path = records[r]['id_path']
-        $scope.db.GetComments(id_path, function(comments) {
-          console.log('==============GetComments=',comments);
-          if (!(id_path in $scope.comments)) {
-            $scope.comments[id_path] = [];
+        let id_path = records[r]['id_path'];
+        $scope.popupNodes.push(
+          {
+            'id_path':id_path,
+            'comments':[]
           }
-          comments.forEach(function(ele, index, array) {
-            $scope.comments[id_path].push(ele['comment']);
-          });
-
-
-          $scope.comments[id_path].forEach(function(ele, index, array) {
-            let comDiv = document.createElement("div");
-            comDiv.innerHTML = ele['comment'];
-            past_post_div.appendChild(comDiv);
-          });
-        });
-
-        // $scope.comments[id_path] = [
-        //   {
-        //     'id_path':id_path,
-        //     'comment':'==========='
-        //   },
-        //   {
-        //     'id_path':id_path,
-        //     'comment':'goooooooooooooooo'
-        //   },
-        //   {
-        //     'id_path':id_path,
-        //     'comment':'A nice journey'
-        //   },
-        // ];
-
-        let template_photo = document.body.querySelector('#photo_with_comments');
-        let img_div      = template_photo.content.querySelector('img');
-        let hidden_div      = template_photo.content.querySelector('.id-path');
-        let comments_div = template_photo.content.querySelector('.comments');
-        let past_post_div = comments_div.childNodes[1];
-        console.log('=================past_post_div=',past_post_div);
-        while (past_post_div.firstChild) {
-          past_post_div.removeChild(past_post_div.firstChild);
-        }
-        console.log('============id_path:',id_path);
-        img_div.src='file:///'+id_path;
-        hidden_div.innerHTML=id_path
-        let content_div = document.importNode(template_photo.content, true);
-
-        $compile(content_div.children[0])($scope);
-        init_items.push(
-					{
-						src : content_div.children[0],
-						type:'inline'
-					}
-				);
+        );
+                                                          // let id_path = records[r]['id_path']
+                                                          // $scope.db.GetComments(id_path, function(comments) {
+                                                          //   console.log('==============GetComments=',comments);
+                                                          //   if (!(id_path in $scope.comments)) {
+                                                          //     $scope.comments[id_path] = [];
+                                                          //   }
+                                                          //   comments.forEach(function(ele, index, array) {
+                                                          //     $scope.comments[id_path].push(ele['comment']);
+                                                          //   });
+                                                          //
+                                                          //
+                                                          //   $scope.comments[id_path].forEach(function(ele, index, array) {
+                                                          //     let comDiv = document.createElement("div");
+                                                          //     comDiv.innerHTML = ele['comment'];
+                                                          //     past_post_div.appendChild(comDiv);
+                                                          //   });
+                                                          // });
+                                                          //
+                                                          // let template_photo = document.body.querySelector('#photo_with_comments');
+                                                          // let img_div      = template_photo.content.querySelector('img');
+                                                          // let hidden_div      = template_photo.content.querySelector('.id-path');
+                                                          // let comments_div = template_photo.content.querySelector('.comments');
+                                                          // let past_post_div = comments_div.childNodes[1];
+                                                          // console.log('=================past_post_div=',past_post_div);
+                                                          // while (past_post_div.firstChild) {
+                                                          //   past_post_div.removeChild(past_post_div.firstChild);
+                                                          // }
+                                                          // console.log('============id_path:',id_path);
+                                                          // img_div.src='file:///'+id_path;
+                                                          // hidden_div.innerHTML=id_path
+                                                          // let content_div = document.importNode(template_photo.content, true);
+                                                          //
+                                                          // $compile(content_div.children[0])($scope);
+                                                          // init_items.push(
+                                                  				// 	{
+                                                  				// 		src : content_div.children[0],
+                                                  				// 		type:'inline'
+                                                  				// 	}
+                                                  				// );
 			}
-
+      console.log("==================popupNodes length=",$scope.popupNodes);
+      $scope.$apply();
       let all_items = init_items;
+      let popupNodeList = document.body.querySelector(".popup-node-list");
+      console.log("=============popupNodeList=",popupNodeList.children.length);
+      var children = Array.from(popupNodeList.children);
+      children.forEach(function(ele, index, array) {
+        all_items.push(
+          {
+            src:ele,
+            type:'inline'
+          }
+        );
+      });
+
+      // console.log("=============popupNodeList len=",popupNodeList.length);
 
 			if (all_items.length > 0) {
 				$.magnificPopup.open({

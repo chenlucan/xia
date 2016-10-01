@@ -64,7 +64,28 @@
 		</div> <!-- cd-timeline-block -->
 	</section> <!-- cd-timeline -->
 
+	<div style="display:None" class="popup-node-list">
+		<div ng-repeat="node in popupNodes">
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-7">
+					<img class="center-block" ng-src={{"file:///"+node.id_path}}></img>
+					<div class="id-path" style="display:none"></div>
+				</div>
 
+				<div class="col-md-3 bg-success comments">
+					<div class="col-md-12 comments-list" ng-repeat="comm in node.comments">
+						<div ng-bind="comm"></div>
+					</div>
+					<div class="col-md-12">
+						<input  ng-bind="current_comment" class="form-control" type="text">
+						<button type="button" ng-click="newPost(node.id_path)" class="btn btn-primary btn-sm">Post</button>
+					</div>
+				</div>
+				<div class="col-md-1"></div>
+			</div>
+		</div>
+	</div>
 
 
 <!-- template not supposed to be used after moving timeline from uidelegate to angular -->
