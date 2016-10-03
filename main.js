@@ -43,6 +43,7 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
     'post':''
   };
   $scope.postComment = postComments;
+  $scope.deleteComment = deleteComment;
   $scope.popupNodes = [];
 
 	// we use pantry as our data home
@@ -81,7 +82,19 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
         $scope.db.GetComments(id_path, function(comments) {
           for (var i in $scope.popupNodes) {
             if ($scope.popupNodes[i].id_path === id_path) {
-               $scope.popupNodes[i].comments = ['ccc','ddd'];
+               $scope.popupNodes[i].comments = [
+                 {
+                   id: 2,
+                   comment:'ccc',
+                   creation_time: new Date(),
+                   id_path: 'path2'
+                 },
+                 { id: 4,
+                   comment:'dddddd',
+                   creation_time: new Date(),
+                   id_path: 'path4'
+                 },
+                 ];
                break; //Stop this loop, we found it!
             }
           }
@@ -231,11 +244,16 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
 
   function postComments(id_path) {
     let new_post = {
+      // 'id':auto generated, incremental
       'id_path': id_path,
       'comment': $scope.newPost.comment,
       'creation_time': new Date()
     };
     console.log('========newPost==',$scope.newPost.comment);
     $scope.db.SaveComments(new_post);
+  }
+
+  function deleteComment(id) {
+    console.log('===========deleteComment==',id);
   }
 }]);

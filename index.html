@@ -75,7 +75,7 @@
 
 				<div class="col-md-3 bg-success comments">
 					<div class="col-md-12 comments-list" ng-repeat="comm in node.comments">
-						<div ng-bind="comm"></div>
+						<div><span ng-bind="comm.comment"></span><a ng-click="deleteComment(comm.id)">Delete</a></div>
 					</div>
 					<div class="col-md-12">
 						<input ng-model="newPost.comment" class="form-control" type="text">
