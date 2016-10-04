@@ -29,6 +29,7 @@ var Pantry = function (db_home) {
 	this.GetByOneDay = GetByOneDay;
 	this.GetComments = GetComments;
 	this.SaveComments = SaveComments;
+	this.DeleteComments = DeleteComments;
 
 	SetUpIndex();
 
@@ -88,12 +89,21 @@ var Pantry = function (db_home) {
 			id_path, comment, creation_time
 		*/
 		db_comments.insert(comment, function(err, doc) {
+			console.log('================saved comments==',err);
+		});
+	}
+
+	function DeleteComments(commentid) {
+		db_comments.remove({ _id: commentid }, {}, function (err, numRemoved) {
+			console.log('=============delete done==',err,'===',numRemoved);
 		});
 	}
 
 	function SetUpIndex() {
 		db_.ensureIndex({fieldName: 'birth_time'}, function(err) {});
 		db_.ensureIndex({fieldName: 'type'},       function(err) {});
+		db_comments.ensureIndex({fieldName: 'id'},       function(err) {});
+		db_comments.ensureIndex({fieldName: 'id_path'},  function(err) {});
 	}
 
 }

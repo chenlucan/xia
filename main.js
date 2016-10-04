@@ -37,14 +37,14 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
 
 	$scope.timeline = {};
 	$scope.timelineKeys = [];
-  $scope.comments = {};
-
-  $scope.newPost = {
-    'post':''
+  $scope.popupNodes = []; // nodes for magnific-popup
+  // this additioal nested is here to enforce the presence of dot: newComment.comment
+  $scope.newComment = {
+    'comment':''
   };
+
   $scope.postComment = postComments;
   $scope.deleteComment = deleteComment;
-  $scope.popupNodes = [];
 
 	// we use pantry as our data home
 	console.log('app home: ', path.dirname(nw.App.dataPath));
@@ -82,20 +82,9 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
         $scope.db.GetComments(id_path, function(comments) {
           for (var i in $scope.popupNodes) {
             if ($scope.popupNodes[i].id_path === id_path) {
-               $scope.popupNodes[i].comments = [
-                 {
-                   id: 2,
-                   comment:'ccc',
-                   creation_time: new Date(),
-                   id_path: 'path2'
-                 },
-                 { id: 4,
-                   comment:'dddddd',
-                   creation_time: new Date(),
-                   id_path: 'path4'
-                 },
-                 ];
-               break; //Stop this loop, we found it!
+              console.log('=========find comments==',comments.length);
+              $scope.popupNodes[i].comments = comments;
+              break; //Stop this loop, we found it!
             }
           }
           $scope.$apply();
@@ -246,14 +235,15 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
     let new_post = {
       // 'id':auto generated, incremental
       'id_path': id_path,
-      'comment': $scope.newPost.comment,
+      'comment': $scope.newComment.comment,
       'creation_time': new Date()
     };
-    console.log('========newPost==',$scope.newPost.comment);
+    console.log('========newComment==',$scope.newComment.comment);
     $scope.db.SaveComments(new_post);
   }
 
-  function deleteComment(id) {
-    console.log('===========deleteComment==',id);
+  function deleteComment(commentid) {
+    console.log('===========deleteComment==',commentid);
+    $scope.db.DeleteComments(commentid);
   }
 }]);
