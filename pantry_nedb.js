@@ -84,18 +84,22 @@ var Pantry = function (db_home) {
 		});
 	}
 
-	function SaveComments(comment) {
+	function SaveComments(comment, onsuccess) {
 		/*
 			id_path, comment, creation_time
 		*/
 		db_comments.insert(comment, function(err, doc) {
-			console.log('================saved comments==',err);
+			if (!err) {
+				onsuccess(doc);
+			}
 		});
 	}
 
-	function DeleteComments(commentid) {
+	function DeleteComments(commentid, onsuccess) {
 		db_comments.remove({ _id: commentid }, {}, function (err, numRemoved) {
-			console.log('=============delete done==',err,'===',numRemoved);
+			if (!err) {
+				onsuccess(commentid);
+			}
 		});
 	}
 

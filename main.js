@@ -82,7 +82,6 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
         $scope.db.GetComments(id_path, function(comments) {
           for (var i in $scope.popupNodes) {
             if ($scope.popupNodes[i].id_path === id_path) {
-              console.log('=========find comments==',comments.length);
               $scope.popupNodes[i].comments = comments;
               break; //Stop this loop, we found it!
             }
@@ -238,12 +237,26 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
       'comment': $scope.newComment.comment,
       'creation_time': new Date()
     };
-    console.log('========newComment==',$scope.newComment.comment);
-    $scope.db.SaveComments(new_post);
+    $scope.newComment.comment = '';
+    $scope.db.SaveComments(new_post, function(doc) {
+      for (var i in $scope.popupNodes) {
+        if ($scope.popupNodes[i].id_path === id_path) {
+          $scope.popupNodes[i].comments.push(doc);
+          break; //Stop this loop, we found it!
+        }
+      }
+      $scope.$applyAsync();
+    });
   }
 
   function deleteComment(commentid) {
-    console.log('===========deleteComment==',commentid);
-    $scope.db.DeleteComments(commentid);
+    $scope.db.DeleteComments(commentid, function(deletedid) {
+      for (var i in $scope.popupNodes) {
+        $scope.popupNodes[i].comments = $scope.popupNodes[i].comments.filter(function(el) {
+          return el._id !== commentid;
+        });
+      }
+      $scope.$applyAsync();
+    });
   }
 }]);
