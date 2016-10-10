@@ -114,7 +114,7 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
             callbacks : {
               change: function() {
               },
-              open : function() {
+              open : function() {              
               },
               elementParse: function(item) {
               }
