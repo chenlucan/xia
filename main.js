@@ -113,8 +113,12 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
 
             callbacks : {
               change: function() {
-                $scope.newComment.comment = '';
-                $scope.$applyAsync();
+                setTimeout(function() {
+                  document.querySelector('.commentBox').focus();
+                  $('.commentBox').trigger('focus');
+                  $scope.newComment.comment = '';
+                  $scope.$applyAsync();
+                }, 100);
               },
               open : function() {
               },
