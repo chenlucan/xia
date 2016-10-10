@@ -113,8 +113,10 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
 
             callbacks : {
               change: function() {
+                $scope.newComment.comment = '';
+                $scope.$applyAsync();
               },
-              open : function() {              
+              open : function() {
               },
               elementParse: function(item) {
               }
