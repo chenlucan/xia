@@ -17,7 +17,9 @@ file:
 */
 var Pantry = function (db_home) {
 	var pantry_ = path.join(db_home, 'pantry.nedb');
+	var comments_ = path.join(db_home, 'comments.nedb');
 	var db_ = new Datastore({filename: pantry_, autoload: true});
+	var db_comments = new Datastore({filename: comments_, autoload: true});
 
 	this.Remove    = Remove;
 	this.SaveFile  = SaveFile;
@@ -25,6 +27,9 @@ var Pantry = function (db_home) {
 	this.GetByDate = GetByDate;
 	this.GetByType = GetByType;
 	this.GetByOneDay = GetByOneDay;
+	this.GetComments = GetComments;
+	this.SaveComments = SaveComments;
+	this.DeleteComments = DeleteComments;
 
 	SetUpIndex();
 
@@ -71,9 +76,38 @@ var Pantry = function (db_home) {
 		});
 	}
 
+	function GetComments(idpath, on_comments) {
+		db_comments.find({id_path:idpath}).sort({creation_time: 1}).exec(function (err, docs) {
+			if (!err) {
+				on_comments(docs);
+			}
+		});
+	}
+
+	function SaveComments(comment, onsuccess) {
+		/*
+			id_path, comment, creation_time
+		*/
+		db_comments.insert(comment, function(err, doc) {
+			if (!err) {
+				onsuccess(doc);
+			}
+		});
+	}
+
+	function DeleteComments(commentid, onsuccess) {
+		db_comments.remove({ _id: commentid }, {}, function (err, numRemoved) {
+			if (!err) {
+				onsuccess(commentid);
+			}
+		});
+	}
+
 	function SetUpIndex() {
 		db_.ensureIndex({fieldName: 'birth_time'}, function(err) {});
 		db_.ensureIndex({fieldName: 'type'},       function(err) {});
+		db_comments.ensureIndex({fieldName: 'id'},       function(err) {});
+		db_comments.ensureIndex({fieldName: 'id_path'},  function(err) {});
 	}
 
 }

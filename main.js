@@ -28,7 +28,7 @@ xiaApp.config(['$compileProvider',
 	  // $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file:chrome-extension):/);
 	}]);
 
-xiaApp.controller('xiaCtrl', function($scope) {
+xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
   $scope.appTitle          = i18n.__('app-slogan');
   $scope.btnMore           = i18n.__('More');
   $scope.btnMovePhotosIn   = i18n.__('Move my photos in...');
@@ -37,6 +37,14 @@ xiaApp.controller('xiaCtrl', function($scope) {
 
 	$scope.timeline = {};
 	$scope.timelineKeys = [];
+  $scope.popupNodes = []; // nodes for magnific-popup
+  // this additioal nested is here to enforce the presence of dot: newComment.comment
+  $scope.newComment = {
+    'comment':''
+  };
+
+  $scope.postComment = postComments;
+  $scope.deleteComment = deleteComment;
 
 	// we use pantry as our data home
 	console.log('app home: ', path.dirname(nw.App.dataPath));
@@ -60,22 +68,63 @@ xiaApp.controller('xiaCtrl', function($scope) {
 		var iso_btime = btime.replace(/\//g, '-');
 
 		$scope.db.GetByOneDay(iso_btime, function(records) {
-			var item_list = [];
+			let init_items = [];
+      $scope.popupNodes = []
 			for (var r in records) {
-				item_list.push(
-					{
-						src : 'file:///'+records[r]['id_path'],
-						title:'first'
-					}
-				);
+        let id_path = records[r]['id_path'];
+        $scope.popupNodes.push(
+          {
+            'id_path':id_path,
+            'comments':[]
+          }
+        );
+
+        $scope.db.GetComments(id_path, function(comments) {
+          for (var i in $scope.popupNodes) {
+            if ($scope.popupNodes[i].id_path === id_path) {
+              $scope.popupNodes[i].comments = comments;
+              break; //Stop this loop, we found it!
+            }
+          }
+          $scope.$apply();
+        });
 			}
-			if (item_list.length > 0) {
+
+      $scope.$apply();
+      let all_items = init_items;
+      let popupNodeList = document.body.querySelector(".popup-node-list");
+      let children = Array.from(popupNodeList.children);
+      children.forEach(function(ele, index, array) {
+        all_items.push(
+          {
+            src:ele,
+            type:'inline'
+          }
+        );
+      });
+
+			if (all_items.length > 0) {
 				$.magnificPopup.open({
-						items: item_list,
+						items: all_items,
 				    gallery: {
 				      enabled: true
 				    },
-				    type: 'image' // this is a default type
+				    type: 'image', // this is a default type
+
+            callbacks : {
+              change: function() {
+                setTimeout(function() {
+                  document.querySelector('.commentBox').focus();
+                  $('.commentBox').trigger('focus');
+                  $scope.newComment.comment = '';
+                  $scope.$applyAsync();
+                }, 100);
+              },
+              open : function() {
+              },
+              elementParse: function(item) {
+              }
+            }
 				});
 			}
 		});
@@ -129,43 +178,7 @@ xiaApp.controller('xiaCtrl', function($scope) {
 				});
 			}
 		}
-          //
-      		// function InitaDynamicPopup() {
-      		// 	$('#open-popup').magnificPopup({
-      		// 	    items: [
-      		// 	      {
-      		// 	        src: 'http://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Peter_%26_Paul_fortress_in_SPB_03.jpg/800px-Peter_%26_Paul_fortress_in_SPB_03.jpg',
-      		// 	        title: 'Peter & Paul fortress in SPB'
-      		// 	      },
-      		// 	      {
-      		// 	        src: 'http://vimeo.com/123123',
-      		// 	        type: 'iframe' // this overrides default type
-      		// 	      },
-      		// 	      {
-      		// 	        src: $('<div class="white-popup">Dynamically created element</div>'), // Dynamically created element
-      		// 	        type: 'inline'
-      		// 	      },
-      		// 	      {
-      		// 	        src: '<div class="white-popup">Popup from HTML string</div>', // HTML string
-      		// 	        type: 'inline'
-      		// 	      },
-      		// 	      {
-      		// 	        src: '#my-popup', // CSS selector of an element on page that should be used as a popup
-      		// 	        type: 'inline'
-      		// 	      }
-      		// 	    ],
-      		// 	    gallery: {
-      		// 	      enabled: true
-      		// 	    },
-      		// 	    type: 'image' // this is a default type
-      		// 	});
-      		// }
-
 });
-
-
-
-
 
 
 
@@ -222,4 +235,34 @@ xiaApp.controller('xiaCtrl', function($scope) {
 			});
 		}
 	}
-});
+
+  function postComments(id_path) {
+    let new_post = {
+      // 'id':auto generated, incremental
+      'id_path': id_path,
+      'comment': $scope.newComment.comment,
+      'creation_time': new Date()
+    };
+    $scope.newComment.comment = '';
+    $scope.db.SaveComments(new_post, function(doc) {
+      for (var i in $scope.popupNodes) {
+        if ($scope.popupNodes[i].id_path === id_path) {
+          $scope.popupNodes[i].comments.push(doc);
+          break; //Stop this loop, we found it!
+        }
+      }
+      $scope.$applyAsync();
+    });
+  }
+
+  function deleteComment(commentid) {
+    $scope.db.DeleteComments(commentid, function(deletedid) {
+      for (var i in $scope.popupNodes) {
+        $scope.popupNodes[i].comments = $scope.popupNodes[i].comments.filter(function(el) {
+          return el._id !== commentid;
+        });
+      }
+      $scope.$applyAsync();
+    });
+  }
+}]);
