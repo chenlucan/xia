@@ -1,41 +1,23 @@
 var path   = require('path');
 var fs     = require('fs');
 
-var fm     = require('./filemanager.js');
-var pantry_nedb = require('./pantry_nedb.js');
-
-var i18n = require("i18n");
-
-i18n.configure({
-    locales:['en', 'cn'],
-    defaultLocale: 'en',
-    directory:'./locales'
-});
-
-var local = 'en';
-var lang = window.navigator.language;
-if (lang === 'zh-CN' || lang === 'zh-TW') {
-  local = 'cn';
-}
-i18n.setLocale(local);
+var locales = require('./themes/tl_locales.js').locales;
 
 console.log("==================language===",window.navigator.language);
 
 var xiaApp = angular.module('xia', []);
-console.log('=========================2');
 xiaApp.config(['$compileProvider',
   function($compileProvider) {
   // $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
   // $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file:chrome-extension):/);
 }]);
-console.log('=========================3');
-xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
-  $scope.appTitle          = i18n.__('app-slogan');
-  $scope.btnMore           = i18n.__('More');
-  $scope.btnMovePhotosIn   = i18n.__('Move my photos in...');
-  $scope.recordYourLife    = i18n.__('Record your life');
-  $scope.recordYourLifeDes = i18n.__('Record your life-description');
-  console.log('=========================1');
+xiaApp.controller('xiaCtrl', ['$scope', function($scope) {
+  $scope.appTitle          = locales('app-slogan');
+  $scope.btnMore           = locales('More');
+  $scope.btnMovePhotosIn   = locales('Move my photos in...');
+  $scope.recordYourLife    = locales('Record your life');
+  $scope.recordYourLifeDes = locales('Record your life-description');
+
 	$scope.timeline = {};
 	$scope.timelineKeys = [];
   $scope.popupNodes = []; // nodes for magnific-popup
@@ -47,20 +29,61 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
   $scope.postComment = postComments;
   $scope.deleteComment = deleteComment;
 
-	// we use pantry as our data home
-	console.log('app home: ', path.dirname(nw.App.dataPath));
-	var data_home   = path.join(path.dirname(nw.App.dataPath), 'pantry');
-	var photos_home = path.join(data_home, 'photos');
-	var db_home     = path.join(data_home, 'db');
-	var records_by_date = {};
-
 	InitializeInstallation();
 
-	var db = new pantry_nedb.Pantry(db_home);
 	$scope.db = db;
 	db.GetAll(OnDBRecords);
 
-	var fileMgr = new fm.FileManager(data_home, function(){}, function(){}, FileImported);
+
+  jQuery(document).ready(function($) {
+    IniializeTimeline();
+    InitializeEvents();
+    function InitializeEvents() {
+      var button = document.querySelector('#import-button');
+      button.addEventListener('click', function () {
+        selectFolderDialog();
+      });
+    }
+
+    function selectFolderDialog() {
+      var inputField = document.querySelector('#folderSelector');
+      inputField.addEventListener('change', function () {
+        var folderPath = this.value;
+        DiscoverFolrder(folderPath);
+      });
+      inputField.click();
+    }
+
+    function DiscoverFolrder(folderPath) {
+      fileMgr.DiscoverAndImportPath(folderPath, FileImported);
+    }
+
+    function IniializeTimeline() {
+      var timelineBlocks = $('.cd-timeline-block'), offset = 0.8;
+
+      //hide timeline blocks which are outside the viewport
+      hideBlocks(timelineBlocks, offset);
+
+      //on scolling, show/animate timeline blocks when enter the viewport
+      $(window).on('scroll', function(){
+        (!window.requestAnimationFrame)
+          ? setTimeout(function(){ showBlocks(timelineBlocks, offset); }, 100)
+          : window.requestAnimationFrame(function(){ showBlocks(timelineBlocks, offset); });
+      });
+
+      function hideBlocks(blocks, offset) {
+        blocks.each(function(){
+          ( $(this).offset().top > $(window).scrollTop()+$(window).height()*offset ) && $(this).find('.cd-timeline-img, .cd-timeline-content').addClass('is-hidden');
+        });
+      }
+
+      function showBlocks(blocks, offset) {
+        blocks.each(function(){
+          ( $(this).offset().top <= $(window).scrollTop()+$(window).height()*offset && $(this).find('.cd-timeline-img').hasClass('is-hidden') ) && $(this).find('.cd-timeline-img, .cd-timeline-content').removeClass('is-hidden').addClass('bounce-in');
+        });
+      }
+    }
+  });
 
 	$scope.Popup = Popup;
 
@@ -106,82 +129,27 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
 
 			if (all_items.length > 0) {
 				$.magnificPopup.open({
-						items: all_items,
-				    gallery: {
-				      enabled: true
-				    },
-				    type: 'image', // this is a default type
-
-            callbacks : {
-              change: function() {
-                setTimeout(function() {
-                  document.querySelector('.commentBox').focus();
-                  $('.commentBox').trigger('focus');
-                  $scope.newComment.comment = '';
-                  $scope.$applyAsync();
-                }, 100);
-              },
-              open : function() {
-              },
-              elementParse: function(item) {
-              }
-            }
+					items: all_items,
+			    gallery: {
+			      enabled: true
+			    },
+			    type: 'image', // this is a default type
+          callbacks : {
+            change: function() {
+              setTimeout(function() {
+                document.querySelector('.commentBox').focus();
+                $('.commentBox').trigger('focus');
+                $scope.newComment.comment = '';
+                $scope.$applyAsync();
+              }, 100);
+            },
+            open : function() {},
+            elementParse: function(item) {}
+          }
 				});
 			}
 		});
 	}
-
-	jQuery(document).ready(function($) {
-		IniializeTimeline();
-		InitializeEvents();
-		function InitializeEvents() {
-			var button = document.querySelector('#import-button');
-			button.addEventListener('click', function () {
-				selectFolderDialog();
-			});
-		}
-
-		function selectFolderDialog() {
-				var inputField = document.querySelector('#folderSelector');
-				inputField.addEventListener('change', function () {
-					var folderPath = this.value;
-					DiscoverFolrder(folderPath);
-				});
-				inputField.click();
-		}
-
-		function DiscoverFolrder(folderPath) {
-			fileMgr.DiscoverAndImportPath(folderPath);
-		}
-
-		function IniializeTimeline() {
-			var timelineBlocks = $('.cd-timeline-block'), offset = 0.8;
-
-			//hide timeline blocks which are outside the viewport
-			hideBlocks(timelineBlocks, offset);
-
-			//on scolling, show/animate timeline blocks when enter the viewport
-			$(window).on('scroll', function(){
-				(!window.requestAnimationFrame)
-					? setTimeout(function(){ showBlocks(timelineBlocks, offset); }, 100)
-					: window.requestAnimationFrame(function(){ showBlocks(timelineBlocks, offset); });
-			});
-
-			function hideBlocks(blocks, offset) {
-				blocks.each(function(){
-					( $(this).offset().top > $(window).scrollTop()+$(window).height()*offset ) && $(this).find('.cd-timeline-img, .cd-timeline-content').addClass('is-hidden');
-				});
-			}
-
-			function showBlocks(blocks, offset) {
-				blocks.each(function(){
-					( $(this).offset().top <= $(window).scrollTop()+$(window).height()*offset && $(this).find('.cd-timeline-img').hasClass('is-hidden') ) && $(this).find('.cd-timeline-img, .cd-timeline-content').removeClass('is-hidden').addClass('bounce-in');
-				});
-			}
-		}
-});
-
-
 
 	// function definitions
 	function OnDBRecords(records) {
@@ -267,4 +235,3 @@ xiaApp.controller('xiaCtrl', ['$scope', '$compile', function($scope, $compile) {
     });
   }
 }]);
-console.log('=========================4');
