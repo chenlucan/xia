@@ -1,0 +1,131 @@
+<div ng-app="xia" ng-controller="xiaCtrl">
+  <link rel="stylesheet" href="../css/font.css"> <!-- http://fonts.googleapis.com/css?family=Droid+Serif|Open+Sans:400,700 -->
+  <link rel="stylesheet" href="../css/reset.css"> <!-- CSS reset -->
+  <link rel="stylesheet" href="../css/style.css"> <!-- Resource style -->
+  <link rel="stylesheet" href="../css/timeline_image.css"> <!-- Resource style -->
+  <link rel="stylesheet" href="../lightbox/css/lightbox.min.css">
+  <link rel="stylesheet" href="../css/magnific-popup.css">
+  <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
+
+  <script src="../js/modernizr.js"></script> <!-- Modernizr -->
+  <script src="../js/jquery-1.11.0.min.js"></script>
+  <script src="../js/jquery.magnific-popup.min.js"></script>
+  <script src="../node_modules/angular/angular.min.js"></script>
+  <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="tl.js"></script>
+	<header>
+		<div id="import-button" ng-bind="btnMovePhotosIn"></div>
+		<input id="folderSelector" type="file" nwdirectory/>
+	</header>
+
+	<section id="cd-timeline" class="cd-container">
+		<div ng-repeat="date_id in timelineKeys">
+			<div id="init-tl-block" class="cd-timeline-block">
+				<div class="cd-timeline-img cd-picture">
+					<img src="../img/cd-icon-picture.svg" alt="Picture">
+				</div> <!-- cd-timeline-img -->
+				<div class="cd-timeline-content">
+					<div ng-if="$index < 4" ng-repeat="img in timeline[date_id]">
+						<div class="tl_responsive">
+							<div class="tl_img">
+								<a target="_blank" ng-click="Popup(date_id)" class="with-caption">
+									<img ng-src="file:///{{img['id_path']}}" alt="{{img['name']}}" >
+								</a>
+							</div>
+						</div>
+					</div>
+					<h2></h2>
+					<p></p>
+					<a href="" ng-click="Popup(date_id)" class="cd-read-more" ng-bind="btnMore"></a>
+					<span class="cd-date">{{date_id}}</span>
+				</div> <!-- cd-timeline-content -->
+			</div> <!-- cd-timeline-block -->
+		</div>
+
+		<!-- this node has to be present as insert referrence -->
+		<div id="init-tl-block" class="cd-timeline-block">
+			<div class="cd-timeline-img cd-picture">
+				<img src="../img/cd-icon-picture.svg" alt="Picture">
+			</div> <!-- cd-timeline-img -->
+			<div class="cd-timeline-content">
+				<h2 ng-bind="recordYourLife"></h2>
+				<p ng-bind="recordYourLifeDes"></p>
+				<a href="" class="cd-read-more" ng-bind="btnMore"></a>
+				<span class="cd-date"></span>
+			</div> <!-- cd-timeline-content -->
+		</div> <!-- cd-timeline-block -->
+	</section> <!-- cd-timeline -->
+
+	<div style="display:None" class="popup-node-list">
+		<div ng-repeat="node in popupNodes">
+			<div class="row">
+				<div class="col-md-1"></div>
+				<div class="col-md-7">
+					<img class="center-block" ng-src={{"file:///"+node.id_path}}></img>
+					<div class="id-path" style="display:none"></div>
+				</div>
+
+				<div class="col-md-3 bg-success comments">
+					<div class="col-md-12 comments-list" ng-repeat="comm in node.comments">
+						<div><span ng-bind="comm.comment"></span><a style="cursor:default" ng-click="deleteComment(comm._id)">Delete</a></div>
+					</div>
+					<div class="col-md-12">
+						<form ng-submit="postComment(node.id_path)">
+							<input ng-model="newComment.comment" class="commentBox" type="text" autofocus="autofocus">
+							<button type="button" class="btn btn-primary btn-sm">Post</button>
+						</form>
+					</div>
+				</div>
+				<div class="col-md-1"></div>
+			</div>
+		</div>
+	</div>
+
+<div>
+
+<!-- template not supposed to be used after moving timeline from uidelegate to angular -->
+	<template id='img-placeholder-template'>
+		<div class="tl_responsive">
+			<div class="tl_img">
+				<a target="_blank" href="">
+					<img src="" alt="" >
+				</a>
+				<!-- <div class="tl_desc"></div> -->
+			</div>
+		</div>
+	</template>
+
+	<template id='img-template'>
+		<div class="cd-timeline-block">
+			<div class="cd-timeline-img cd-picture">
+				<img src="../img/cd-icon-picture.svg" alt="Picture">
+			</div> <!-- cd-timeline-img -->
+			<div class="cd-timeline-content">
+				<!-- images go here -->
+				<h2></h2>
+				<div class="tl_clearfix"></div>
+				<p></p>
+				<a href="" class="cd-read-more"></a>
+				<span class="cd-date"></span>
+			</div> <!-- cd-timeline-content -->
+		</div> <!-- cd-timeline-block -->
+	</template>
+
+	<template id='photo_with_comments'>
+		<div class="row">
+			<div class="col-md-1"></div>
+		  <div class="col-md-7">
+				<img class="center-block"></img>
+				<div class="id-path" style="display:none"></div>
+			</div>
+
+		  <div class="col-md-3 bg-success comments">
+				<div class="col-md-12 comments-list"></div>
+				<div class="col-md-12">
+				  <input  class="form-control" type="text">
+					<button type="button" ng-click="newPost()" class="btn btn-primary btn-sm">Post</button>
+				</div>
+			</div>
+			<div class="col-md-1"></div>
+		</div>
+	</template>
