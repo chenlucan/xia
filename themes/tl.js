@@ -1,17 +1,20 @@
-var path   = require('path');
+
 var fs     = require('fs');
 
 var locales = require('./themes/tl_locales.js').locales;
+var xiaApp  = require('./xia_app.js');
 
 console.log("==================language===",window.navigator.language);
 
-var xiaApp = angular.module('xia', []);
-xiaApp.config(['$compileProvider',
+var xia_app = xiaApp.xiaApp;
+
+var tl_App = angular.module('tl', []);
+tl_App.config(['$compileProvider',
   function($compileProvider) {
   // $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
   // $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file:chrome-extension):/);
 }]);
-xiaApp.controller('xiaCtrl', ['$scope', function($scope) {
+tl_App.controller('tlCtrl', ['$scope', function($scope) {
   $scope.appTitle          = locales('app-slogan');
   $scope.btnMore           = locales('More');
   $scope.btnMovePhotosIn   = locales('Move my photos in...');
@@ -28,12 +31,14 @@ xiaApp.controller('xiaCtrl', ['$scope', function($scope) {
 
   $scope.postComment = postComments;
   $scope.deleteComment = deleteComment;
+  $scope.Popup = Popup;
 
-	InitializeInstallation();
+  $scope.xia_app = xia_app;
+	$scope.db = xia_app.db;
+  $scope.fileMgr = xia_app.fileMgr;
+  $scope.xia_app.callbacks['on_file_imported'] = FileImported;
 
-	$scope.db = db;
-	db.GetAll(OnDBRecords);
-
+	$scope.db.GetAll(OnDBRecords);
 
   jQuery(document).ready(function($) {
     IniializeTimeline();
@@ -55,7 +60,7 @@ xiaApp.controller('xiaCtrl', ['$scope', function($scope) {
     }
 
     function DiscoverFolrder(folderPath) {
-      fileMgr.DiscoverAndImportPath(folderPath, FileImported);
+      $scope.fileMgr.DiscoverAndImportPath(folderPath);
     }
 
     function IniializeTimeline() {
@@ -84,8 +89,6 @@ xiaApp.controller('xiaCtrl', ['$scope', function($scope) {
       }
     }
   });
-
-	$scope.Popup = Popup;
 
 	function Popup(btime) {
 		// (todo) - btime is from ui, it's supposed local timezone, we used it as iso-date
@@ -157,7 +160,7 @@ xiaApp.controller('xiaCtrl', ['$scope', function($scope) {
 			fs.stat(record['id_path'], function(err, stats) {
 				if (err) {
 					console.log('DB file record has error:', err);
-					db.Remove(record['id_path']);
+					$scope.db.Remove(record['id_path']);
 					return;
 				}
 				OnRecords([record]);
@@ -187,22 +190,8 @@ xiaApp.controller('xiaCtrl', ['$scope', function($scope) {
 	}
 
 	function FileImported(file) {
-		db.SaveFile(file);
+		$scope.db.SaveFile(file);
 		OnRecords([file]);
-	}
-
-	// only effective for app first time setup
-	function InitializeInstallation() {
-		SetUpPantryDir();
-
-		function SetUpPantryDir() {
-			fs.mkdir(data_home, function(err) {
-				if (!err) {
-					fs.mkdir(photos_home, function(err) {});
-					fs.mkdir(db_home, function(err) {});
-				}
-			});
-		}
 	}
 
   function postComments(id_path) {

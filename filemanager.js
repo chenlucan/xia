@@ -5,19 +5,19 @@ var fd   = require("./filediscover.js");
 var hash = require("./filehash.js");
 
 // file meta-data analyzer
-var FileManager = function (data_home, on_img, on_movie) {
+var FileManager = function (data_home, on_img, on_movie, callbacks) {
 	var data_home_   = data_home;
 	var photos_home_ = path.join(data_home_, 'photos');
 	var on_img_   = on_img;
 	var on_movie_ = on_movie;
-	var file_imported_ = null;
+	var callbacks_ = callbacks;
 	var hash_     = new hash.FileHash();
 	var discovers_ = [];
 
 	this.DiscoverAndImportPath = DiscoverAndImportPath;
 
-	function DiscoverAndImportPath(folderPath, file_imported) {
-		var discover = new fd.FileDiscover(folderPath, ['png','jpg','jpeg'], DiscoveredFile, function(dir_path) { file_imported(); });
+	function DiscoverAndImportPath(folderPath) {
+		var discover = new fd.FileDiscover(folderPath, ['png','jpg','jpeg'], DiscoveredFile, DiscoverFinished);
 		discovers_.push(discover);
 	}
 
@@ -47,7 +47,9 @@ var FileManager = function (data_home, on_img, on_movie) {
 		}
 		ConvertExternalToDbFileRecord(file);
 		CopyToDataHome([file], function(file) {
-			file_imported_(file);
+			if (callbacks_['on_file_imported']) {
+				callbacks_['on_file_imported'](file);
+			}
 		});
 	}
 
